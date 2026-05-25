@@ -16,6 +16,10 @@ Operational helper scripts for local execution.
   - preflight checks for a release version input in `vX.Y.Z` format.
 - `release-preflight.sh`
   - Unix-like preflight checks for a release version input in `vX.Y.Z` format.
+- `validate-version.ps1`
+  - checks committed Gradle and npm versions match the provided release tag (`vX.Y.Z`).
+- `validate-version.sh`
+  - Unix-like committed version cross-check for Gradle and npm release versions.
 
 ## Preferred Quick Path
 
@@ -45,6 +49,7 @@ Unix-like:
 ./scripts/dev.sh
 ./scripts/verify.sh
 ./scripts/release-preflight.sh v0.1.0
+./scripts/validate-version.sh v0.1.0
 ```
 
 Windows PowerShell:
@@ -53,4 +58,5 @@ Windows PowerShell:
 .\scripts\dev.ps1
 .\scripts\verify.ps1
 .\scripts\release-preflight.ps1 -Version v0.1.0
+.\scripts\validate-version.ps1 -Version v0.1.0
 ```
