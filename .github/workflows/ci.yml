@@ -1,4 +1,4 @@
-name: Contracts CI - Lint, Freshness, and Parity
+name: Contracts CI - Lint, Freshness, Parity, and Consumer Samples
 
 on:
   pull_request:
@@ -71,3 +71,28 @@ jobs:
       - name: Run Go Fixture Parity Test
         working-directory: packages/go
         run: go test ./sh/whoa/sutradhar/sdk/v1
+
+  consumer-samples-linux:
+    name: Consumer Samples - Linux Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-setup-action@v1
+      - name: Run Suite Local
+        run: make suite-local
