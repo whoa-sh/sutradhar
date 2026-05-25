@@ -23,6 +23,12 @@ topics:
   - name: notification.render.results
     stage: render
     owner: template-service
+  - name: notification.render.retry
+    stage: render-retry
+    owner: notification-streams
+  - name: notification.render.dlq
+    stage: render-dlq
+    owner: notification-streams
   - name: notification.delivery.commands.critical.email
     stage: delivery-command
     priority: critical

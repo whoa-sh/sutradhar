@@ -127,3 +127,55 @@ rules:
     path: notification.lifecycle.details
     severity: error
     description: lifecycle details oneof must match lifecycle type.
+  - ruleId: TEMPLATE_REF_REQUIRED_KEY
+    path: template.ref.template_key
+    severity: error
+    description: template_key is mandatory.
+  - ruleId: TEMPLATE_REF_REQUIRED_LOCALE
+    path: template.ref.locale
+    severity: error
+    description: locale is mandatory and should be BCP-47.
+  - ruleId: TEMPLATE_REF_REQUIRED_CHANNEL
+    path: template.ref.channel
+    severity: error
+    description: template channel must not be UNSPECIFIED.
+  - ruleId: TEMPLATE_REF_REQUIRED_VERSION_SELECTOR
+    path: template.ref.version_selector
+    severity: error
+    description: version selector must be explicit (version or latest_active).
+  - ruleId: TEMPLATE_LATEST_ACTIVE_REQUIRED_REASON
+    path: template.ref.latest_active.reason
+    severity: error
+    description: latest_active reason is mandatory.
+  - ruleId: RENDER_CMD_REQUIRED_REQUEST_ID
+    path: template.render_command.request_id
+    severity: error
+    description: render command request_id is mandatory.
+  - ruleId: RENDER_CMD_REQUIRED_RENDER_JOB_ID
+    path: template.render_command.render_job_id
+    severity: error
+    description: render_job_id is mandatory.
+  - ruleId: RENDER_CMD_REQUIRED_TEMPLATE_REF
+    path: template.render_command.template_ref
+    severity: error
+    description: template_ref is mandatory in render command.
+  - ruleId: RENDER_RESULT_REQUIRED_REQUEST_ID
+    path: template.render_result.request_id
+    severity: error
+    description: render result request_id is mandatory.
+  - ruleId: RENDER_RESULT_REQUIRED_RENDER_JOB_ID
+    path: template.render_result.render_job_id
+    severity: error
+    description: render result render_job_id is mandatory.
+  - ruleId: RENDER_RESULT_REQUIRED_STATUS
+    path: template.render_result.status
+    severity: error
+    description: render status must not be UNSPECIFIED.
+  - ruleId: RENDER_RESULT_REQUIRED_TEMPLATE_VERSION
+    path: template.render_result.template_version_used
+    severity: error
+    description: template_version_used is mandatory in render result.
+  - ruleId: RENDER_RESULT_REQUIRED_CHANNEL
+    path: template.render_result.channel
+    severity: error
+    description: render result channel must not be UNSPECIFIED.
