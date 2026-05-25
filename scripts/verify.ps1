@@ -30,6 +30,9 @@ try {
         }
         Write-Host "[run] buf lint"
         & buf lint
+        if ($LASTEXITCODE -ne 0) {
+            throw "buf lint failed with exit code $LASTEXITCODE"
+        }
     } else {
         Write-Host "[skip] buf lint (buf.yaml not present yet)"
     }
@@ -38,6 +41,9 @@ try {
         if (Test-Path "gradlew.bat") {
             Write-Host "[run] .\gradlew.bat --no-daemon tasks"
             & .\gradlew.bat --no-daemon tasks | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                throw "gradlew tasks failed with exit code $LASTEXITCODE"
+            }
             Write-Host "[ok] Gradle wrapper execution"
         } else {
             Write-Host "[warn] build.gradle.kts exists but gradlew.bat missing"

@@ -5,6 +5,25 @@ plugins {
 group = "sh.whoa.sutradhar"
 version = "0.1.0-SNAPSHOT"
 
+tasks.register<Exec>("protoLint") {
+    group = "verification"
+    description = "Runs buf lint for protobuf contracts."
+    commandLine("buf", "lint")
+}
+
+tasks.register<Exec>("protoGenerate") {
+    group = "build"
+    description = "Runs buf generate for protobuf outputs."
+    commandLine("buf", "generate")
+}
+
+tasks.register<Exec>("protoCheckFreshness") {
+    group = "verification"
+    description = "Fails if generated outputs are stale after buf generate."
+    dependsOn("protoGenerate")
+    commandLine("git", "diff", "--exit-code", "--", "packages/go", "packages/typescript/src/generated")
+}
+
 tasks.register("verifyRepositoryFiles") {
     group = "verification"
     description = "Checks that required repository files exist."
@@ -28,6 +47,21 @@ tasks.register("verifyRepositoryFiles") {
         "proto/sh/whoa/sutradhar/common/v1/metadata.proto",
         "proto/sh/whoa/sutradhar/common/v1/idempotency_context.proto",
         "proto/sh/whoa/sutradhar/common/v1/failure_context.proto",
+        "proto/sh/whoa/sutradhar/notification/v1/notification_enums.proto",
+        "proto/sh/whoa/sutradhar/notification/v1/recipient_ref.proto",
+        "proto/sh/whoa/sutradhar/notification/v1/notification_target.proto",
+        "proto/sh/whoa/sutradhar/notification/v1/notification_request.proto",
+        "proto/sh/whoa/sutradhar/notification/v1/lifecycle_event.proto",
+        "proto/sh/whoa/sutradhar/template/v1/template_enums.proto",
+        "proto/sh/whoa/sutradhar/template/v1/template_ref.proto",
+        "proto/sh/whoa/sutradhar/template/v1/render_command.proto",
+        "proto/sh/whoa/sutradhar/template/v1/render_result.proto",
+        "proto/sh/whoa/sutradhar/provider/v1/provider_enums.proto",
+        "proto/sh/whoa/sutradhar/provider/v1/delivery_command.proto",
+        "proto/sh/whoa/sutradhar/provider/v1/delivery_event.proto",
+        "proto/sh/whoa/sutradhar/preference/v1/preference_enums.proto",
+        "proto/sh/whoa/sutradhar/preference/v1/preference_event.proto",
+        "proto/sh/whoa/sutradhar/preference/v1/preference_decision.proto",
     )
 
     inputs.files(requiredFiles.map { layout.projectDirectory.file(it) })
@@ -41,5 +75,6 @@ tasks.register("verifyRepositoryFiles") {
 }
 
 tasks.named("check") {
+    dependsOn("protoLint")
     dependsOn("verifyRepositoryFiles")
 }
