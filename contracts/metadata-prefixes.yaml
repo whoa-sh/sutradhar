@@ -1,0 +1,18 @@
+version: 1
+owner: sh.whoa.sutradhar
+prefixes:
+  - prefix: pii.
+    classification: restricted
+    notes: Contains personal data and requires sensitivity tagging.
+  - prefix: secret.
+    classification: restricted
+    notes: Must not be logged in plaintext.
+  - prefix: provider.
+    classification: controlled
+    notes: Provider routing and diagnostics metadata.
+  - prefix: debug.
+    classification: allowed
+    notes: Non-production debugging context.
+  - prefix: system.
+    classification: controlled
+    notes: Reserved for platform-managed metadata.

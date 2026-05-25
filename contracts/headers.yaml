@@ -1,0 +1,27 @@
+version: 1
+owner: sh.whoa.sutradhar
+headers:
+  - name: traceparent
+    required: true
+    description: W3C trace context parent.
+  - name: tracestate
+    required: false
+    description: W3C trace context state.
+  - name: tenantId
+    required: true
+    description: Tenant routing and ownership boundary.
+  - name: correlationId
+    required: true
+    description: End-to-end request correlation.
+  - name: causationId
+    required: true
+    description: Parent event/action linkage.
+  - name: schemaVersion
+    required: true
+    description: Operational schema family/version marker.
+  - name: messageType
+    required: true
+    description: Logical message type identifier.
+  - name: producerService
+    required: true
+    description: Technical producer service identity.

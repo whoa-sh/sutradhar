@@ -1,0 +1,14 @@
+version: v2
+managed:
+  enabled: true
+plugins:
+  - remote: buf.build/protocolbuffers/java
+    out: packages/jvm/src/main/java
+  - remote: buf.build/bufbuild/es
+    out: packages/typescript/src/generated
+    opt:
+      - target=ts
+  - remote: buf.build/protocolbuffers/go
+    out: packages/go
+    opt:
+      - paths=source_relative

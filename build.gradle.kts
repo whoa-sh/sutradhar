@@ -16,6 +16,13 @@ tasks.register("verifyRepositoryFiles") {
         "Makefile",
         "Makefile.windows",
         "scripts/README.md",
+        "buf.yaml",
+        "buf.gen.yaml",
+        "contracts/topics.yaml",
+        "contracts/headers.yaml",
+        "contracts/validation.yaml",
+        "contracts/metadata-prefixes.yaml",
+        "proto/sh/whoa/sutradhar/common/v1/bootstrap.proto",
     )
 
     inputs.files(requiredFiles.map { layout.projectDirectory.file(it) })

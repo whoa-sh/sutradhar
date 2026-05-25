@@ -1,0 +1,28 @@
+version: 1
+owner: sh.whoa.sutradhar
+topics:
+  - name: notification.requests.critical
+    stage: request
+    priority: critical
+    owner: notification-streams
+  - name: notification.requests.high
+    stage: request
+    priority: high
+    owner: notification-streams
+  - name: notification.requests.normal
+    stage: request
+    priority: normal
+    owner: notification-streams
+  - name: notification.requests.low
+    stage: request
+    priority: low
+    owner: notification-streams
+  - name: notification.render.commands
+    stage: render
+    owner: notification-streams
+  - name: notification.render.results
+    stage: render
+    owner: template-service
+  - name: notification.lifecycle.events
+    stage: lifecycle
+    owner: notification-streams

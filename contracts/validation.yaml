@@ -1,0 +1,29 @@
+version: 1
+owner: sh.whoa.sutradhar
+error_model:
+  fields:
+    - code
+    - message
+    - path
+    - severity
+    - category
+    - ruleId
+    - expected
+    - actual
+    - constraint
+    - documentationUrl
+defaults:
+  mode: collect_all
+rules:
+  - ruleId: HDR_REQUIRED_TENANT
+    path: headers.tenantId
+    severity: error
+    description: tenantId header is mandatory.
+  - ruleId: HDR_REQUIRED_TRACEPARENT
+    path: headers.traceparent
+    severity: error
+    description: traceparent header is mandatory.
+  - ruleId: HDR_REQUIRED_PRODUCER_SERVICE
+    path: headers.producerService
+    severity: error
+    description: producerService header is mandatory.
