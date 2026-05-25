@@ -3,7 +3,7 @@ SHELL := powershell.exe
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release suite-local suite-contracts suite-examples
+.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release release-check suite-local suite-contracts suite-examples
 
 help:
 	@Write-Host "Sutradhar Windows make targets"
@@ -14,6 +14,7 @@ help:
 	@Write-Host "  make -f Makefile.windows smoke-examples"
 	@Write-Host "  make -f Makefile.windows prototype"
 	@Write-Host "  make -f Makefile.windows preflight-release VERSION=vX.Y.Z"
+	@Write-Host "  make -f Makefile.windows release-check VERSION=vX.Y.Z"
 	@Write-Host ""
 	@Write-Host "Command suites"
 	@Write-Host "  make -f Makefile.windows suite-contracts"
@@ -61,3 +62,7 @@ suite-local: suite-contracts verify suite-examples
 preflight-release:
 	@if (-not "$(VERSION)") { throw "Set VERSION=vX.Y.Z. Example: make -f Makefile.windows preflight-release VERSION=v0.1.0"; }
 	@.\scripts\release-preflight.ps1 -Version "$(VERSION)"
+
+release-check:
+	@if (-not "$(VERSION)") { throw "Set VERSION=vX.Y.Z. Example: make -f Makefile.windows release-check VERSION=v0.1.0"; }
+	@.\scripts\release-check.ps1 -Version "$(VERSION)"
