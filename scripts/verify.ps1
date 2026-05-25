@@ -35,7 +35,7 @@ try {
         Write-Host "[skip] buf lint (buf.yaml not present yet)"
     }
 
-    if (Test-Path "build.gradle.kts" -and (Test-Path "gradlew.bat")) {
+    if ((Test-Path "build.gradle.kts") -and (Test-Path "gradlew.bat")) {
         Write-Host "[run] .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
         & .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
         if ($LASTEXITCODE -ne 0) { throw "gradlew test failed with exit code $LASTEXITCODE" }

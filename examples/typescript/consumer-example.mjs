@@ -1,5 +1,5 @@
-import { CONTRACT_TOPICS, CONTRACT_HEADERS } from "../../packages/typescript/src/sdk/constants.mjs";
+import { TOPIC_NAMES, HEADER_NAMES } from "../../packages/typescript/src/sdk/constants.mjs";
 
 console.log("Sutradhar TypeScript consumer example");
-console.log(`Topic: ${CONTRACT_TOPICS.notificationRequested}`);
-console.log(`Header: ${CONTRACT_HEADERS.traceId}`);
+console.log(`Topics: ${TOPIC_NAMES.join(",")}`);
+console.log(`Headers: ${HEADER_NAMES.join(",")}`);

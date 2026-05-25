@@ -3,7 +3,7 @@ SHELL := bash
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate verify prototype preflight-release
+.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release suite-local suite-contracts suite-examples
 
 help:
 	@printf '%s\n' "Sutradhar make targets"
@@ -11,8 +11,14 @@ help:
 	@printf '%s\n' "  make proto-lint                       - run buf lint when buf.yaml exists"
 	@printf '%s\n' "  make generate                         - run buf generate when buf.gen.yaml exists"
 	@printf '%s\n' "  make verify                           - run local verification script"
+	@printf '%s\n' "  make smoke-examples                   - run JVM + TypeScript + Go examples"
 	@printf '%s\n' "  make prototype                        - lint + generate + verify (non-release loop)"
 	@printf '%s\n' "  make preflight-release VERSION=vX.Y.Z - release preflight checks"
+	@printf '%s\n' ""
+	@printf '%s\n' "Command suites"
+	@printf '%s\n' "  make suite-contracts                  - proto-lint + generate"
+	@printf '%s\n' "  make suite-examples                   - smoke-examples"
+	@printf '%s\n' "  make suite-local                      - suite-contracts + verify + suite-examples"
 
 dev:
 	@./scripts/dev.sh
@@ -37,8 +43,20 @@ generate:
 verify:
 	@./scripts/verify.sh
 
+smoke-examples:
+	@./scripts/smoke-examples.sh
+
 prototype: proto-lint generate verify
 	@printf '%s\n' "[ok] prototype loop complete"
+
+suite-contracts: proto-lint generate
+	@printf '%s\n' "[ok] suite-contracts complete"
+
+suite-examples: smoke-examples
+	@printf '%s\n' "[ok] suite-examples complete"
+
+suite-local: suite-contracts verify suite-examples
+	@printf '%s\n' "[ok] suite-local complete"
 
 preflight-release:
 	@if [ -z "$${VERSION:-}" ]; then \

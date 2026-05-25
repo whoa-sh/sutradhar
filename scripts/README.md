@@ -33,7 +33,11 @@ Use the root `Makefile` for day-to-day generation and prototyping loops on Unix-
 make dev
 make generate
 make verify
+make smoke-examples
 make prototype
+make suite-contracts
+make suite-examples
+make suite-local
 ```
 
 Use `Makefile.windows` for native PowerShell make flows:
@@ -42,8 +46,21 @@ Use `Makefile.windows` for native PowerShell make flows:
 make -f Makefile.windows dev
 make -f Makefile.windows generate
 make -f Makefile.windows verify
+make -f Makefile.windows smoke-examples
 make -f Makefile.windows prototype
+make -f Makefile.windows suite-contracts
+make -f Makefile.windows suite-examples
+make -f Makefile.windows suite-local
 ```
+
+## Command Collections (Suites)
+
+- `suite-contracts`
+  - contract pipeline group: `proto-lint` + `generate`.
+- `suite-examples`
+  - example runtime group: `smoke-examples`.
+- `suite-local`
+  - full local development gate: `suite-contracts` + `verify` + `suite-examples`.
 
 ## Usage
 

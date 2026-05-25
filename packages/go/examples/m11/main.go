@@ -8,6 +8,6 @@ import (
 
 func main() {
 	fmt.Println("Sutradhar Go consumer example")
-	fmt.Printf("Topic: %s\n", sdk.TopicNotificationRequested)
-	fmt.Printf("Header: %s\n", sdk.HeaderTraceID)
+	fmt.Printf("Topics: %v\n", sdk.TopicNames)
+	fmt.Printf("Headers: %v\n", sdk.HeaderNames)
 }

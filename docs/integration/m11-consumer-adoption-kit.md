@@ -6,7 +6,7 @@ This guide provides minimal runnable consumer examples for JVM, TypeScript, and 
 
 - `examples/jvm/.../M11ConsumerExample.java`
 - `examples/typescript/consumer-example.mjs`
-- `examples/go/main.go`
+- `packages/go/examples/m11/main.go`
 - smoke scripts:
   - `scripts/smoke-examples.sh`
   - `scripts/smoke-examples.ps1`

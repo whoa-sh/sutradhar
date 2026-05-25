@@ -15,9 +15,9 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "TypeScript example failed with $LASTEXITCODE" }
 
     Write-Host "[run] Go example"
-    Push-Location examples\go
+    Push-Location packages\go
     try {
-        & go run .
+        & go run .\examples\m11
         if ($LASTEXITCODE -ne 0) { throw "Go example failed with $LASTEXITCODE" }
     } finally {
         Pop-Location

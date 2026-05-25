@@ -15,6 +15,6 @@ echo "[run] TypeScript example"
 node examples/typescript/consumer-example.mjs
 
 echo "[run] Go example"
-(cd examples/go && go run .)
+(cd packages/go && go run ./examples/m11)
 
 echo "[ok] example smoke checks"
