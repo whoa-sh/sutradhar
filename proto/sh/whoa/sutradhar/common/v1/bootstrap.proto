@@ -4,6 +4,7 @@ package sh.whoa.sutradhar.common.v1;
 
 option java_multiple_files = true;
 option java_package = "sh.whoa.sutradhar.common.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/common/v1;commonv1";
 
 message BootstrapPing {
   string message = 1;
