@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.preference.v1;
+
+import "google/protobuf/timestamp.proto";
+import "sh/whoa/sutradhar/common/v1/tenant_context.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+import "sh/whoa/sutradhar/notification/v1/recipient_ref.proto";
+import "sh/whoa/sutradhar/preference/v1/preference_enums.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.preference.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/preference/v1;preferencev1";
+
+message PreferenceEvent {
+  common.v1.TenantContext tenant_context = 1;
+  notification.v1.RecipientRef recipient_ref = 2;
+  notification.v1.NotificationChannel channel = 3;
+  PreferenceState preference_state = 4;
+  google.protobuf.Timestamp effective_from = 5;
+  int64 version = 6;
+}

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.preference.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.preference.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/preference/v1;preferencev1";
+
+enum PreferenceState {
+  PREFERENCE_STATE_UNSPECIFIED = 0;
+  PREFERENCE_STATE_ALLOWED = 1;
+  PREFERENCE_STATE_SUPPRESSED = 2;
+}
+
+enum PreferenceDecisionSource {
+  PREFERENCE_DECISION_SOURCE_UNSPECIFIED = 0;
+  PREFERENCE_DECISION_SOURCE_PROJECTION = 1;
+  PREFERENCE_DECISION_SOURCE_SERVICE = 2;
+}
+
+enum PreferenceDecisionReason {
+  PREFERENCE_DECISION_REASON_UNSPECIFIED = 0;
+  PREFERENCE_DECISION_REASON_ALLOWED = 1;
+  PREFERENCE_DECISION_REASON_USER_OPTOUT = 2;
+  PREFERENCE_DECISION_REASON_TENANT_POLICY = 3;
+  PREFERENCE_DECISION_REASON_QUIET_HOURS = 4;
+  PREFERENCE_DECISION_REASON_CHANNEL_DISABLED = 5;
+  PREFERENCE_DECISION_REASON_COMPLIANCE_HOLD = 6;
+}

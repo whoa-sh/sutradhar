@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.preference.v1;
+
+import "google/protobuf/timestamp.proto";
+import "sh/whoa/sutradhar/preference/v1/preference_enums.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.preference.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/preference/v1;preferencev1";
+
+message PreferenceDecision {
+  bool allowed = 1;
+  PreferenceDecisionReason reason = 2;
+  PreferenceDecisionSource source = 3;
+  google.protobuf.Timestamp evaluated_at = 4;
+  int64 projection_version = 5;
+}
