@@ -1,0 +1,5 @@
+Copyright (c) 2026 Subhrodip Mohanta (whoa.sh).
+
+All rights reserved.
+
+License terms for this repository are intentionally explicit and must be finalized before public distribution or package publishing.

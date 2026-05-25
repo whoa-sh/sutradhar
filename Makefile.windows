@@ -1,0 +1,45 @@
+SHELL := powershell.exe
+.SHELLFLAGS := -NoProfile -ExecutionPolicy Bypass -Command
+
+.DEFAULT_GOAL := help
+
+.PHONY: help dev proto-lint generate verify prototype preflight-release
+
+help:
+	@Write-Host "Sutradhar Windows make targets"
+	@Write-Host "  make -f Makefile.windows dev"
+	@Write-Host "  make -f Makefile.windows proto-lint"
+	@Write-Host "  make -f Makefile.windows generate"
+	@Write-Host "  make -f Makefile.windows verify"
+	@Write-Host "  make -f Makefile.windows prototype"
+	@Write-Host "  make -f Makefile.windows preflight-release VERSION=vX.Y.Z"
+
+dev:
+	@.\scripts\dev.ps1
+
+proto-lint:
+	@if (Test-Path "buf.yaml") { \
+		if (-not (Get-Command buf -ErrorAction SilentlyContinue)) { throw "buf.yaml present but buf CLI missing."; } ; \
+		buf lint ; \
+	} else { \
+		Write-Host "[skip] proto-lint: buf.yaml not present yet" ; \
+	}
+
+generate:
+	@if (Test-Path "buf.gen.yaml") { \
+		if (-not (Get-Command buf -ErrorAction SilentlyContinue)) { throw "buf.gen.yaml present but buf CLI missing."; } ; \
+		buf generate ; \
+		Write-Host "[ok] buf generate" ; \
+	} else { \
+		Write-Host "[skip] generate: buf.gen.yaml not present yet" ; \
+	}
+
+verify:
+	@.\scripts\verify.ps1
+
+prototype: proto-lint generate verify
+	@Write-Host "[ok] prototype loop complete"
+
+preflight-release:
+	@if (-not "$(VERSION)") { throw "Set VERSION=vX.Y.Z. Example: make -f Makefile.windows preflight-release VERSION=v0.1.0"; }
+	@.\scripts\release-preflight.ps1 -Version "$(VERSION)"
