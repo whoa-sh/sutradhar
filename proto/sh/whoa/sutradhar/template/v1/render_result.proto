@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.template.v1;
+
+import "google/protobuf/timestamp.proto";
+import "sh/whoa/sutradhar/common/v1/common_enums.proto";
+import "sh/whoa/sutradhar/common/v1/failure_context.proto";
+import "sh/whoa/sutradhar/common/v1/metadata.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+import "sh/whoa/sutradhar/template/v1/template_enums.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.template.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/template/v1;templatev1";
+
+message ContentRef {
+  string storage_type = 1;
+  string location = 2;
+  string checksum_sha256 = 3;
+  optional int64 size_bytes = 4;
+  common.v1.SensitivityClass sensitivity = 5;
+}
+
+message EmailRenderedPayload {
+  string subject = 1;
+  string body_text = 2;
+  string body_html = 3;
+}
+
+message SmsRenderedPayload {
+  string body = 1;
+}
+
+message PushRenderedPayload {
+  string title = 1;
+  string body = 2;
+}
+
+message WebhookRenderedPayload {
+  string body = 1;
+}
+
+message RenderedPayload {
+  oneof payload {
+    EmailRenderedPayload email = 1;
+    SmsRenderedPayload sms = 2;
+    PushRenderedPayload push = 3;
+    WebhookRenderedPayload webhook = 4;
+  }
+
+  ContentRef content_ref = 10;
+}
+
+message RenderResult {
+  string request_id = 1;
+  string render_job_id = 2;
+  RenderStatus status = 3;
+  string template_version_used = 4;
+  notification.v1.NotificationChannel channel = 5;
+  RenderedPayload rendered_payload = 6;
+  common.v1.FailureContext failure_context = 7;
+  google.protobuf.Timestamp rendered_at = 8;
+  common.v1.Metadata metadata = 9;
+}

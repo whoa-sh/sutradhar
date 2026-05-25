@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.template.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.template.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/template/v1;templatev1";
+
+enum RenderStatus {
+  RENDER_STATUS_UNSPECIFIED = 0;
+  RENDER_STATUS_SUCCEEDED = 1;
+  RENDER_STATUS_FAILED_RETRYABLE = 2;
+  RENDER_STATUS_FAILED_FINAL = 3;
+}

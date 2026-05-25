@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.template.v1;
+
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.template.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/template/v1;templatev1";
+
+message LatestActiveTemplate {
+  string reason = 1;
+  optional int64 max_age_seconds = 2;
+}
+
+message TemplateRef {
+  string template_key = 1;
+  string locale = 2;
+  notification.v1.NotificationChannel channel = 3;
+  string variant = 4;
+
+  oneof version_selector {
+    string version = 5;
+    LatestActiveTemplate latest_active = 6;
+  }
+}

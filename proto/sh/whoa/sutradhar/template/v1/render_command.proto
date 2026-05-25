@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.template.v1;
+
+import "sh/whoa/sutradhar/common/v1/metadata.proto";
+import "sh/whoa/sutradhar/common/v1/tenant_context.proto";
+import "sh/whoa/sutradhar/common/v1/trace_context.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+import "sh/whoa/sutradhar/template/v1/template_ref.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.template.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/template/v1;templatev1";
+
+message RenderCommand {
+  common.v1.TenantContext tenant_context = 1;
+  common.v1.TraceContext trace_context = 2;
+  string request_id = 3;
+  string render_job_id = 4;
+  TemplateRef template_ref = 5;
+  notification.v1.NotificationChannel channel = 6;
+  common.v1.Metadata variables = 7;
+  common.v1.Metadata metadata = 8;
+}
