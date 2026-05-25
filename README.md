@@ -164,3 +164,12 @@ Local equivalent before opening PR:
 
 - Unix-like: `./scripts/verify.sh`
 - PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1`
+
+## Documentation Map
+
+Integration and operations docs:
+
+- `docs/integration/producer-consumer-onboarding.md`
+- `docs/runbooks/release-runbook.md`
+- `docs/runbooks/rollback-runbook.md`
+- `docs/governance/sensitivity-and-pii.md`

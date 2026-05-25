@@ -1,0 +1,42 @@
+# Release Runbook
+
+## Scope
+
+Immutable production release for Maven and npm packages using GitHub Packages and exact `vX.Y.Z` tags.
+
+## Preconditions
+
+1. Release commit is already on `master`.
+2. `build.gradle.kts` version equals `X.Y.Z`.
+3. `packages/typescript/package.json` version equals `X.Y.Z`.
+4. Target tag `vX.Y.Z` does not already exist.
+5. Required repository permissions/secrets are configured for package publish.
+
+## Execution
+
+1. Trigger workflow:
+   - `.github/workflows/release.yml`
+2. Provide input:
+   - `version = vX.Y.Z`
+3. Workflow gates:
+   - version format validation
+   - full repository verification
+   - release preflight checks
+   - committed version cross-check
+   - Maven publish to GitHub Packages
+   - npm publish to GitHub Packages
+   - Git tag creation and push
+
+## Post-Release Validation
+
+1. Confirm workflow completed successfully.
+2. Confirm Git tag exists in remote.
+3. Confirm Maven package version appears in GitHub Packages.
+4. Confirm npm package version appears in GitHub Packages.
+
+## Failure Rules
+
+- Do not mutate files during release workflow.
+- Do not reuse an existing version tag.
+- On failure, fix source and rerun with a new commit. Keep release immutable.
+
