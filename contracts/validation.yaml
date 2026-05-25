@@ -27,3 +27,51 @@ rules:
     path: headers.producerService
     severity: error
     description: producerService header is mandatory.
+  - ruleId: TCTX_REQUIRED_TENANT_ID
+    path: common.tenant_context.tenant_id
+    severity: error
+    description: tenant_id must be present and non-blank.
+  - ruleId: TRACE_REQUIRED_CORRELATION_ID
+    path: common.trace_context.correlation_id
+    severity: error
+    description: correlation_id must be present and non-blank.
+  - ruleId: TRACE_REQUIRED_CAUSATION_ID
+    path: common.trace_context.causation_id
+    severity: error
+    description: causation_id must be present and non-blank.
+  - ruleId: IDEMP_REQUIRED_SOURCE_SYSTEM
+    path: common.idempotency_context.source_system
+    severity: error
+    description: source_system is mandatory for idempotency context.
+  - ruleId: IDEMP_REQUIRED_SOURCE_EVENT_ID
+    path: common.idempotency_context.source_event_id
+    severity: error
+    description: source_event_id is mandatory for idempotency context.
+  - ruleId: IDEMP_REQUIRED_KEY
+    path: common.idempotency_context.idempotency_key
+    severity: error
+    description: idempotency_key is mandatory and must not be blank.
+  - ruleId: IDEMP_REQUIRED_SCOPE
+    path: common.idempotency_context.dedupe_scope
+    severity: error
+    description: dedupe_scope must not be UNSPECIFIED.
+  - ruleId: META_REQUIRED_KEY
+    path: common.metadata.entries[].key
+    severity: error
+    description: metadata entry key must be present.
+  - ruleId: META_REQUIRED_SENSITIVITY
+    path: common.metadata.entries[].sensitivity
+    severity: error
+    description: metadata entry sensitivity must not be UNSPECIFIED.
+  - ruleId: FAIL_REQUIRED_CODE_NAMESPACE
+    path: common.failure_context.failure_code.namespace
+    severity: error
+    description: failure code namespace is mandatory.
+  - ruleId: FAIL_REQUIRED_CODE
+    path: common.failure_context.failure_code.code
+    severity: error
+    description: failure code is mandatory.
+  - ruleId: FAIL_REQUIRED_SANITIZED_MESSAGE
+    path: common.failure_context.failure_message
+    severity: error
+    description: failure_message must contain sanitized operator-safe text.

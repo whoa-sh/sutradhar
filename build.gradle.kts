@@ -22,7 +22,12 @@ tasks.register("verifyRepositoryFiles") {
         "contracts/headers.yaml",
         "contracts/validation.yaml",
         "contracts/metadata-prefixes.yaml",
-        "proto/sh/whoa/sutradhar/common/v1/bootstrap.proto",
+        "proto/sh/whoa/sutradhar/common/v1/common_enums.proto",
+        "proto/sh/whoa/sutradhar/common/v1/trace_context.proto",
+        "proto/sh/whoa/sutradhar/common/v1/tenant_context.proto",
+        "proto/sh/whoa/sutradhar/common/v1/metadata.proto",
+        "proto/sh/whoa/sutradhar/common/v1/idempotency_context.proto",
+        "proto/sh/whoa/sutradhar/common/v1/failure_context.proto",
     )
 
     inputs.files(requiredFiles.map { layout.projectDirectory.file(it) })
