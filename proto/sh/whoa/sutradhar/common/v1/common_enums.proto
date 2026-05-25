@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.common.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.common.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/common/v1;commonv1";
+
+enum SensitivityClass {
+  SENSITIVITY_CLASS_UNSPECIFIED = 0;
+  SENSITIVITY_CLASS_PUBLIC = 1;
+  SENSITIVITY_CLASS_INTERNAL = 2;
+  SENSITIVITY_CLASS_CONFIDENTIAL = 3;
+  SENSITIVITY_CLASS_PII = 4;
+  SENSITIVITY_CLASS_SECRET = 5;
+}
+
+enum RetryHint {
+  RETRY_HINT_UNSPECIFIED = 0;
+  RETRY_HINT_RETRYABLE = 1;
+  RETRY_HINT_NOT_RETRYABLE = 2;
+  RETRY_HINT_UNKNOWN = 3;
+}
+
+enum DedupeScope {
+  DEDUPE_SCOPE_UNSPECIFIED = 0;
+  DEDUPE_SCOPE_TENANT = 1;
+  DEDUPE_SCOPE_RECIPIENT = 2;
+  DEDUPE_SCOPE_SOURCE_EVENT = 3;
+  DEDUPE_SCOPE_CAMPAIGN = 4;
+  DEDUPE_SCOPE_CHANNEL = 5;
+}

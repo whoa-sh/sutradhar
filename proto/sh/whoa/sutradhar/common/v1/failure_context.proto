@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.common.v1;
+
+import "google/protobuf/timestamp.proto";
+import "sh/whoa/sutradhar/common/v1/common_enums.proto";
+import "sh/whoa/sutradhar/common/v1/metadata.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.common.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/common/v1;commonv1";
+
+message FailureCode {
+  string namespace = 1;
+  string code = 2;
+}
+
+message FailureContext {
+  FailureCode failure_code = 1;
+  string failure_message = 2;
+  bool retryable = 3;
+  RetryHint retry_hint = 4;
+  int32 attempt_number = 5;
+  int32 max_attempts = 6;
+  google.protobuf.Timestamp failed_at = 7;
+  string source_service = 8;
+  Metadata details = 9;
+}

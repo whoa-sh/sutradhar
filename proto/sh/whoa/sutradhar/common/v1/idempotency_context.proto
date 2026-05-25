@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.common.v1;
+
+import "sh/whoa/sutradhar/common/v1/common_enums.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.common.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/common/v1;commonv1";
+
+message IdempotencyContext {
+  string source_system = 1;
+  string source_event_id = 2;
+  string idempotency_key = 3;
+  DedupeScope dedupe_scope = 4;
+}

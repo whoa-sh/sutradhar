@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.common.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.common.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/common/v1;commonv1";
+
+message TenantContext {
+  string tenant_id = 1;
+  string environment = 2;
+  string region = 3;
+}
