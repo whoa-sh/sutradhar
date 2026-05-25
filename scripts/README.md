@@ -12,6 +12,10 @@ Operational helper scripts for local execution.
   - strict local validation wrapper.
 - `verify.sh`
   - Unix-like strict local validation wrapper.
+- `smoke-examples.ps1`
+  - runs minimal JVM/TypeScript/Go consumer examples.
+- `smoke-examples.sh`
+  - Unix-like runner for minimal JVM/TypeScript/Go consumer examples.
 - `release-preflight.ps1`
   - preflight checks for a release version input in `vX.Y.Z` format.
 - `release-preflight.sh`
@@ -59,4 +63,5 @@ Windows PowerShell:
 .\scripts\verify.ps1
 .\scripts\release-preflight.ps1 -Version v0.1.0
 .\scripts\validate-version.ps1 -Version v0.1.0
+.\scripts\smoke-examples.ps1
 ```

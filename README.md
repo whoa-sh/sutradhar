@@ -94,6 +94,21 @@ make -f Makefile.windows verify
 make -f Makefile.windows prototype
 ```
 
+## Consumer Examples (M11)
+
+Minimal runnable examples are available for each target language:
+
+- JVM: `examples/jvm/src/main/java/sh/whoa/sutradhar/examples/M11ConsumerExample.java`
+- TypeScript: `examples/typescript/consumer-example.mjs`
+- Go: `examples/go/main.go`
+
+Run all examples:
+
+- Unix-like: `./scripts/smoke-examples.sh`
+- PowerShell: `.\scripts\smoke-examples.ps1`
+
+Detailed adoption flow: `docs/integration/m11-consumer-adoption-kit.md`.
+
 ## Design And Review Process
 
 Design direction:
