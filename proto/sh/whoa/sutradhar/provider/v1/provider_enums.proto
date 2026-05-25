@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.provider.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.provider.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/provider/v1;providerv1";
+
+enum ProviderType {
+  PROVIDER_TYPE_UNSPECIFIED = 0;
+  PROVIDER_TYPE_SENDGRID = 1;
+  PROVIDER_TYPE_TWILIO = 2;
+  PROVIDER_TYPE_FCM = 3;
+  PROVIDER_TYPE_APNS = 4;
+  PROVIDER_TYPE_GENERIC_WEBHOOK = 5;
+}
+
+enum ProviderDeliveryStatus {
+  PROVIDER_DELIVERY_STATUS_UNSPECIFIED = 0;
+  PROVIDER_DELIVERY_STATUS_ACCEPTED_GATEWAY = 1;
+  PROVIDER_DELIVERY_STATUS_ACCEPTED_PROVIDER = 2;
+  PROVIDER_DELIVERY_STATUS_REJECTED_PROVIDER = 3;
+  PROVIDER_DELIVERY_STATUS_SENT = 4;
+  PROVIDER_DELIVERY_STATUS_DELIVERED = 5;
+  PROVIDER_DELIVERY_STATUS_BOUNCED = 6;
+  PROVIDER_DELIVERY_STATUS_FAILED_RETRYABLE = 7;
+  PROVIDER_DELIVERY_STATUS_FAILED_FINAL = 8;
+  PROVIDER_DELIVERY_STATUS_TIMED_OUT = 9;
+}

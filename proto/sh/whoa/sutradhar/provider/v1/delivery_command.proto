@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.provider.v1;
+
+import "sh/whoa/sutradhar/common/v1/metadata.proto";
+import "sh/whoa/sutradhar/common/v1/tenant_context.proto";
+import "sh/whoa/sutradhar/common/v1/trace_context.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_target.proto";
+import "sh/whoa/sutradhar/provider/v1/provider_enums.proto";
+import "sh/whoa/sutradhar/template/v1/render_result.proto";
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.provider.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/provider/v1;providerv1";
+
+message DeliveryCommand {
+  common.v1.TenantContext tenant_context = 1;
+  common.v1.TraceContext trace_context = 2;
+  string request_id = 3;
+  string delivery_task_id = 4;
+  string attempt_id = 5;
+  notification.v1.NotificationChannel channel = 6;
+  notification.v1.NotificationPriority priority = 7;
+  template.v1.RenderedPayload rendered_payload = 8;
+  notification.v1.NotificationTarget target = 9;
+  ProviderType provider = 10;
+  string provider_sub_id = 11;
+  common.v1.Metadata metadata = 12;
+}
