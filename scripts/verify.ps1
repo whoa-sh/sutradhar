@@ -39,8 +39,8 @@ try {
 
     if (Test-Path "build.gradle.kts") {
         if (Test-Path "gradlew.bat") {
-            Write-Host "[run] .\gradlew.bat --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-            & .\gradlew.bat --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
+            Write-Host "[run] .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
+            & .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
             if ($LASTEXITCODE -ne 0) {
                 throw "gradlew test failed with exit code $LASTEXITCODE"
             }

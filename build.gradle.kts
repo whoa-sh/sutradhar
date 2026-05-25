@@ -14,7 +14,7 @@ java {
 
 sourceSets {
     named("main") {
-        java.srcDir("packages/jvm/src/main/java/sh")
+        java.srcDir("src/main/java")
     }
     named("test") {
         java.srcDir("packages/jvm/src/test/java")

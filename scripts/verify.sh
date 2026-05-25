@@ -36,12 +36,12 @@ fi
 
 if [[ -f "build.gradle.kts" ]]; then
   if [[ -x "./gradlew" ]]; then
-    echo "[run] ./gradlew --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-    ./gradlew --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest >/dev/null
+    echo "[run] ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
+    ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest >/dev/null
     echo "[ok] JVM parity test"
   elif [[ -f "./gradlew" ]]; then
-    echo "[run] bash ./gradlew --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-    bash ./gradlew --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest >/dev/null
+    echo "[run] bash ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
+    bash ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest >/dev/null
     echo "[ok] JVM parity test"
   else
     echo "[warn] build.gradle.kts exists but gradlew missing"
