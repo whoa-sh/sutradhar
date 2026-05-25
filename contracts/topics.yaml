@@ -105,6 +105,9 @@ topics:
     priority: low
     channel: email
     owner: notification-streams
+  - name: preference.events.state.v1
+    stage: preference-event
+    owner: preference-service
   - name: notification.lifecycle.events
     stage: lifecycle
     owner: notification-streams

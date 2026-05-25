@@ -231,3 +231,35 @@ rules:
     path: provider.delivery_event.observed_at
     severity: error
     description: observed_at is mandatory in delivery event.
+  - ruleId: PREF_EVENT_REQUIRED_TENANT_CONTEXT
+    path: preference.event.tenant_context
+    severity: error
+    description: preference event tenant_context is mandatory.
+  - ruleId: PREF_EVENT_REQUIRED_RECIPIENT_REF
+    path: preference.event.recipient_ref
+    severity: error
+    description: preference event recipient_ref is mandatory.
+  - ruleId: PREF_EVENT_REQUIRED_CHANNEL
+    path: preference.event.channel
+    severity: error
+    description: preference event channel must not be UNSPECIFIED.
+  - ruleId: PREF_EVENT_REQUIRED_STATE
+    path: preference.event.preference_state
+    severity: error
+    description: preference state must not be UNSPECIFIED.
+  - ruleId: PREF_EVENT_REQUIRED_EFFECTIVE_FROM
+    path: preference.event.effective_from
+    severity: error
+    description: effective_from is mandatory.
+  - ruleId: PREF_DECISION_REQUIRED_REASON
+    path: preference.decision.reason
+    severity: error
+    description: preference decision reason must not be UNSPECIFIED.
+  - ruleId: PREF_DECISION_REQUIRED_SOURCE
+    path: preference.decision.source
+    severity: error
+    description: preference decision source must not be UNSPECIFIED.
+  - ruleId: PREF_DECISION_REQUIRED_EVALUATED_AT
+    path: preference.decision.evaluated_at
+    severity: error
+    description: evaluated_at is mandatory.
