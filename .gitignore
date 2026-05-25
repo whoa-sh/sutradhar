@@ -2,6 +2,9 @@
 build/
 out/
 
+.agents/
+AGENTS.md
+
 node_modules/
 
 .idea/
