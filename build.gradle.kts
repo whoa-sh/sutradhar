@@ -1,9 +1,35 @@
 plugins {
     base
+    java
 }
 
 group = "sh.whoa.sutradhar"
 version = "0.1.0-SNAPSHOT"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+sourceSets {
+    named("main") {
+        java.srcDir("packages/jvm/src/main/java/sh")
+    }
+    named("test") {
+        java.srcDir("packages/jvm/src/test/java")
+        resources.srcDir("contracts/fixtures")
+    }
+}
+
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
 
 tasks.register<Exec>("protoLint") {
     group = "verification"

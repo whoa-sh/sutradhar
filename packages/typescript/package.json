@@ -1,0 +1,9 @@
+{
+  "name": "@whoa-sh/sutradhar-proto",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:parity": "node --test src/sdk/parity.test.mjs"
+  }
+}
+

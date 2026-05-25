@@ -39,12 +39,12 @@ try {
 
     if (Test-Path "build.gradle.kts") {
         if (Test-Path "gradlew.bat") {
-            Write-Host "[run] .\gradlew.bat --no-daemon tasks"
-            & .\gradlew.bat --no-daemon tasks | Out-Null
+            Write-Host "[run] .\gradlew.bat --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
+            & .\gradlew.bat --no-daemon test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
             if ($LASTEXITCODE -ne 0) {
-                throw "gradlew tasks failed with exit code $LASTEXITCODE"
+                throw "gradlew test failed with exit code $LASTEXITCODE"
             }
-            Write-Host "[ok] Gradle wrapper execution"
+            Write-Host "[ok] JVM parity test"
         } else {
             Write-Host "[warn] build.gradle.kts exists but gradlew.bat missing"
         }
@@ -56,3 +56,34 @@ try {
 } finally {
     Pop-Location
 }
+    if ((Get-Command node -ErrorAction SilentlyContinue) -and (Test-Path "packages/typescript/src/sdk/parity.test.mjs")) {
+        Write-Host "[run] node --test src/sdk/parity.test.mjs"
+        Push-Location "packages/typescript"
+        try {
+            & node --test src/sdk/parity.test.mjs
+            if ($LASTEXITCODE -ne 0) {
+                throw "TypeScript parity test failed with exit code $LASTEXITCODE"
+            }
+            Write-Host "[ok] TypeScript parity test"
+        } finally {
+            Pop-Location
+        }
+    } else {
+        Write-Host "[skip] TypeScript parity test (node or test file missing)"
+    }
+
+    if ((Get-Command go -ErrorAction SilentlyContinue) -and (Test-Path "packages/go/sh/whoa/sutradhar/sdk/v1/parity_test.go")) {
+        Write-Host "[run] go test ./sh/whoa/sutradhar/sdk/v1"
+        Push-Location "packages/go"
+        try {
+            & go test ./sh/whoa/sutradhar/sdk/v1
+            if ($LASTEXITCODE -ne 0) {
+                throw "Go parity test failed with exit code $LASTEXITCODE"
+            }
+            Write-Host "[ok] Go parity test"
+        } finally {
+            Pop-Location
+        }
+    } else {
+        Write-Host "[skip] Go parity test (go or test file missing)"
+    }

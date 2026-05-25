@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "missing-tenant-id-header",
+      "ruleId": "HDR_REQUIRED_TENANT",
+      "path": "headers.tenantId",
+      "severity": "error",
+      "expectedCode": "SH_WHOA_SUTRADHAR.HDR_REQUIRED_TENANT"
+    },
+    {
+      "id": "missing-traceparent-header",
+      "ruleId": "HDR_REQUIRED_TRACEPARENT",
+      "path": "headers.traceparent",
+      "severity": "error",
+      "expectedCode": "SH_WHOA_SUTRADHAR.HDR_REQUIRED_TRACEPARENT"
+    }
+  ]
+}
