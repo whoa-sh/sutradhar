@@ -46,3 +46,36 @@ jobs:
             ${{ runner.os }}-buf-
       - name: Run Full Local Verification Script
         run: ./scripts/verify.sh
+
+  publish-snapshot-maven-and-npm:
+    needs: snapshot-preflight-verification
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://npm.pkg.github.com"
+      - name: Publish Maven Snapshot (GitHub Packages)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: ./gradlew --no-daemon publish
+      - name: Publish NPM Snapshot (GitHub Packages)
+        working-directory: packages/typescript
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm publish --tag snapshot --access restricted
