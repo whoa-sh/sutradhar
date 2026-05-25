@@ -75,3 +75,55 @@ rules:
     path: common.failure_context.failure_message
     severity: error
     description: failure_message must contain sanitized operator-safe text.
+  - ruleId: NOTIF_REQUIRED_REQUEST_ID
+    path: notification.request.request_id
+    severity: error
+    description: notification request_id is mandatory.
+  - ruleId: NOTIF_REQUIRED_PRIORITY
+    path: notification.request.priority
+    severity: error
+    description: notification priority must not be UNSPECIFIED.
+  - ruleId: NOTIF_REQUIRED_CHANNEL
+    path: notification.request.channel
+    severity: error
+    description: notification channel must not be UNSPECIFIED.
+  - ruleId: NOTIF_REQUIRED_TARGET
+    path: notification.request.target
+    severity: error
+    description: notification target is mandatory.
+  - ruleId: NOTIF_REQUIRED_RECIPIENT_REF
+    path: notification.request.recipient_ref
+    severity: error
+    description: recipient_ref is required for recipient-level requests.
+  - ruleId: TARGET_REQUIRED_KIND
+    path: notification.target.kind
+    severity: error
+    description: target kind must not be UNSPECIFIED.
+  - ruleId: TARGET_REQUIRED_SENSITIVITY
+    path: notification.target.sensitivity
+    severity: error
+    description: target sensitivity must not be UNSPECIFIED.
+  - ruleId: TARGET_REQUIRED_ONEOF
+    path: notification.target.target
+    severity: error
+    description: exactly one target variant must be set.
+  - ruleId: LIFECYCLE_REQUIRED_EVENT_ID
+    path: notification.lifecycle.event_id
+    severity: error
+    description: lifecycle event_id is mandatory.
+  - ruleId: LIFECYCLE_REQUIRED_SEQUENCE
+    path: notification.lifecycle.sequence_number
+    severity: error
+    description: lifecycle sequence_number must be positive.
+  - ruleId: LIFECYCLE_REQUIRED_TYPE
+    path: notification.lifecycle.type
+    severity: error
+    description: lifecycle type must not be UNSPECIFIED.
+  - ruleId: LIFECYCLE_REQUIRED_ACTOR_TYPE
+    path: notification.lifecycle.actor_type
+    severity: error
+    description: lifecycle actor_type must not be UNSPECIFIED.
+  - ruleId: LIFECYCLE_DETAILS_MATCH_TYPE
+    path: notification.lifecycle.details
+    severity: error
+    description: lifecycle details oneof must match lifecycle type.

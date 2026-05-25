@@ -23,6 +23,42 @@ topics:
   - name: notification.render.results
     stage: render
     owner: template-service
+  - name: notification.delivery.commands.critical.email
+    stage: delivery-command
+    priority: critical
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.commands.high.email
+    stage: delivery-command
+    priority: high
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.commands.normal.email
+    stage: delivery-command
+    priority: normal
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.commands.low.email
+    stage: delivery-command
+    priority: low
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.events.email
+    stage: delivery-event
+    channel: email
+    owner: provider-gateway
+  - name: notification.delivery.events.sms
+    stage: delivery-event
+    channel: sms
+    owner: provider-gateway
+  - name: notification.delivery.events.push
+    stage: delivery-event
+    channel: push
+    owner: provider-gateway
+  - name: notification.delivery.events.webhook
+    stage: delivery-event
+    channel: webhook
+    owner: provider-gateway
   - name: notification.lifecycle.events
     stage: lifecycle
     owner: notification-streams
