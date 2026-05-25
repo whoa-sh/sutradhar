@@ -16,6 +16,10 @@ Operational helper scripts for local execution.
   - runs minimal JVM/TypeScript/Go consumer examples.
 - `smoke-examples.sh`
   - Unix-like runner for minimal JVM/TypeScript/Go consumer examples.
+- `check-docs.ps1`
+  - validates required documentation markers for workflow freshness.
+- `check-docs.sh`
+  - Unix-like documentation freshness marker validation.
 - `release-preflight.ps1`
   - preflight checks for a release version input in `vX.Y.Z` format.
 - `release-preflight.sh`
@@ -32,12 +36,14 @@ Use the root `Makefile` for day-to-day generation and prototyping loops on Unix-
 ```powershell
 make dev
 make generate
+make docs-check
 make verify
 make smoke-examples
 make prototype
 make suite-contracts
 make suite-examples
 make suite-local
+make polish
 ```
 
 Use `Makefile.windows` for native PowerShell make flows:
@@ -45,12 +51,14 @@ Use `Makefile.windows` for native PowerShell make flows:
 ```powershell
 make -f Makefile.windows dev
 make -f Makefile.windows generate
+make -f Makefile.windows docs-check
 make -f Makefile.windows verify
 make -f Makefile.windows smoke-examples
 make -f Makefile.windows prototype
 make -f Makefile.windows suite-contracts
 make -f Makefile.windows suite-examples
 make -f Makefile.windows suite-local
+make -f Makefile.windows polish
 ```
 
 ## Command Collections (Suites)

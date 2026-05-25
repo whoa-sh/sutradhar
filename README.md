@@ -88,6 +88,8 @@ make smoke-examples
 make suite-contracts
 make suite-examples
 make suite-local
+make docs-check
+make polish
 ```
 
 Native Windows PowerShell:
@@ -100,6 +102,8 @@ make -f Makefile.windows smoke-examples
 make -f Makefile.windows suite-contracts
 make -f Makefile.windows suite-examples
 make -f Makefile.windows suite-local
+make -f Makefile.windows docs-check
+make -f Makefile.windows polish
 ```
 
 ### Command Meaning
@@ -208,6 +212,7 @@ Local equivalent before opening PR:
 
 - Unix-like: `./scripts/verify.sh`
 - PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1`
+- Release preflight script (Unix-like): `./scripts/release-preflight.sh vX.Y.Z`
 
 ## Documentation Map
 
@@ -217,3 +222,7 @@ Integration and operations docs:
 - `docs/runbooks/release-runbook.md`
 - `docs/runbooks/rollback-runbook.md`
 - `docs/governance/sensitivity-and-pii.md`
+
+Troubleshooting:
+
+- `docs/troubleshooting/developer-troubleshooting.md`
