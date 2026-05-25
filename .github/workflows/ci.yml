@@ -1,4 +1,4 @@
-name: ci
+name: Contracts CI - Lint, Freshness, and Parity
 
 on:
   pull_request:
@@ -6,49 +6,49 @@ on:
     branches: [master]
 
 jobs:
-  verify:
+  contracts-lint-freshness-and-parity:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Java
+      - name: Setup Java 21 (Microsoft)
         uses: actions/setup-java@v4
         with:
           distribution: microsoft
           java-version: "21"
           cache: gradle
 
-      - name: Setup Node
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Setup Go
+      - name: Setup Go 1.22
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
 
-      - name: Setup Buf
+      - name: Setup Buf CLI
         uses: bufbuild/buf-setup-action@v1
 
-      - name: Buf lint
+      - name: Lint Protobuf Contracts (Buf)
         run: buf lint
 
-      - name: Generation freshness
+      - name: Check Generated Output Freshness
         run: |
           buf generate
           git diff --exit-code -- packages/go packages/typescript/src/generated
 
-      - name: JVM parity test
+      - name: Run JVM Fixture Parity Test
         run: ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest
 
-      - name: TypeScript parity test
+      - name: Run TypeScript Fixture Parity Test
         working-directory: packages/typescript
         run: node --test src/sdk/parity.test.mjs
 
-      - name: Go parity test
+      - name: Run Go Fixture Parity Test
         working-directory: packages/go
         run: go test ./sh/whoa/sutradhar/sdk/v1

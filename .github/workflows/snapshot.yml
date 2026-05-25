@@ -1,4 +1,4 @@
-name: snapshot
+name: Snapshot CI - Maven and NPM Preflight
 
 on:
   workflow_dispatch:
@@ -6,26 +6,26 @@ on:
     branches: [master]
 
 jobs:
-  preflight:
+  snapshot-preflight-verification:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Setup Java
+      - name: Setup Java 21 (Microsoft)
         uses: actions/setup-java@v4
         with:
           distribution: microsoft
           java-version: "21"
           cache: gradle
-      - name: Setup Node
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Setup Go
+      - name: Setup Go 1.22
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
-      - name: Setup Buf
+      - name: Setup Buf CLI
         uses: bufbuild/buf-setup-action@v1
-      - name: Run local verify
+      - name: Run Full Local Verification Script
         run: ./scripts/verify.sh

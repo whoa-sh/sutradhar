@@ -1,4 +1,4 @@
-name: release
+name: Release CI - Immutable Tag and Publish Preflight
 
 on:
   workflow_dispatch:
@@ -9,17 +9,17 @@ on:
         type: string
 
 jobs:
-  preflight:
+  release-preflight-verification:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Validate version format
+      - name: Validate Release Version Format (vX.Y.Z)
         id: version
         run: |
           VERSION="${{ github.event.inputs.version }}"
@@ -29,45 +29,45 @@ jobs:
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Setup Java
+      - name: Setup Java 21 (Microsoft)
         uses: actions/setup-java@v4
         with:
           distribution: microsoft
           java-version: "21"
           cache: gradle
 
-      - name: Setup Node
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Setup Go
+      - name: Setup Go 1.22
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
 
-      - name: Setup Buf
+      - name: Setup Buf CLI
         uses: bufbuild/buf-setup-action@v1
 
-      - name: Full verification
+      - name: Run Full Local Verification Script
         run: ./scripts/verify.sh
 
-      - name: Release preflight
+      - name: Run Release Preflight Checks
         run: ./scripts/release-preflight.sh "${{ steps.version.outputs.version }}"
 
-  tag:
-    needs: preflight
+  create-release-tag:
+    needs: release-preflight-verification
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Create and push tag
+      - name: Create and Push Immutable Release Tag
         run: |
-          VERSION="${{ needs.preflight.outputs.version }}"
+          VERSION="${{ needs.release-preflight-verification.outputs.version }}"
           git tag "$VERSION"
           git push origin "$VERSION"
