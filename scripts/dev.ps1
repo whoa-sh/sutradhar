@@ -9,10 +9,10 @@ Write-Host "Root: $PSScriptRoot\.."
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Push-Location $root
 try {
-    if (Test-Path ".agents\plans\sutradhar-grill-decision-log.md") {
-        Write-Host "[ok] decision log found"
+    if (Test-Path "README.md") {
+        Write-Host "[ok] README found"
     } else {
-        Write-Host "[warn] decision log missing"
+        Write-Host "[warn] README missing"
     }
 
     if (Get-Command rg -ErrorAction SilentlyContinue) {
@@ -30,9 +30,9 @@ try {
 
     Write-Host ""
     Write-Host "Next:"
-    Write-Host "1) Read .agents/plans/sutradhar-grill-decision-log.md"
-    Write-Host "2) Read .agents/plans/sutradhar-comprehensive-implementation-plan.md"
-    Write-Host "3) Update .agents/tracker.md item to IN_PROGRESS before changes"
+    Write-Host "1) Run make verify or make -f Makefile.windows verify"
+    Write-Host "2) Add Buf and contract manifests before proto generation work"
+    Write-Host "3) Keep generated outputs reproducible and checked by local verification"
 } finally {
     Pop-Location
 }

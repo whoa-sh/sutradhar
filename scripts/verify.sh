@@ -7,10 +7,12 @@ cd "$ROOT"
 echo "Running local verification checks..."
 
 required_files=(
-  ".agents/plans/sutradhar-grill-decision-log.md"
-  ".agents/plans/sutradhar-comprehensive-implementation-plan.md"
-  ".agents/tracker.md"
-  "AGENTS.md"
+  "README.md"
+  "LICENSE.txt"
+  "NOTICE"
+  "Makefile"
+  "Makefile.windows"
+  "scripts/README.md"
 )
 
 for path in "${required_files[@]}"; do

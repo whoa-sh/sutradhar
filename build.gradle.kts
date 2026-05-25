@@ -5,16 +5,17 @@ plugins {
 group = "sh.whoa.sutradhar"
 version = "0.1.0-SNAPSHOT"
 
-tasks.register("verifyPlanningFiles") {
+tasks.register("verifyRepositoryFiles") {
     group = "verification"
-    description = "Checks that required planning and tracker files exist."
+    description = "Checks that required repository files exist."
 
     val requiredFiles = listOf(
-        ".agents/plans/sutradhar-grill-decision-log.md",
-        ".agents/plans/sutradhar-comprehensive-implementation-plan.md",
-        ".agents/plans/sutradhar-technology-and-tooling-matrix.md",
-        ".agents/tracker.md",
-        "AGENTS.md",
+        "README.md",
+        "LICENSE.txt",
+        "NOTICE",
+        "Makefile",
+        "Makefile.windows",
+        "scripts/README.md",
     )
 
     inputs.files(requiredFiles.map { layout.projectDirectory.file(it) })
@@ -22,11 +23,11 @@ tasks.register("verifyPlanningFiles") {
     doLast {
         requiredFiles.forEach { path ->
             val file = layout.projectDirectory.file(path).asFile
-            require(file.isFile) { "Missing required planning file: $path" }
+            require(file.isFile) { "Missing required repository file: $path" }
         }
     }
 }
 
 tasks.named("check") {
-    dependsOn("verifyPlanningFiles")
+    dependsOn("verifyRepositoryFiles")
 }

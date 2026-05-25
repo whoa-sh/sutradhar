@@ -1,6 +1,6 @@
 # Scripts
 
-Operational helper scripts for local execution and agent workflows.
+Operational helper scripts for local execution.
 
 ## Available Scripts
 
@@ -9,9 +9,9 @@ Operational helper scripts for local execution and agent workflows.
 - `dev.sh`
   - Unix-like local bootstrap guidance and quick environment checks.
 - `verify.ps1`
-  - strict local validation wrapper; use before marking tracker items `DONE`.
+  - strict local validation wrapper.
 - `verify.sh`
-  - Unix-like strict local validation wrapper; use before marking tracker items `DONE`.
+  - Unix-like strict local validation wrapper.
 - `release-preflight.ps1`
   - preflight checks for a release version input in `vX.Y.Z` format.
 - `release-preflight.sh`

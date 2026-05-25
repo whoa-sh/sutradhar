@@ -7,10 +7,10 @@ cd "$ROOT"
 echo "Sutradhar dev bootstrap"
 echo "Root: $ROOT"
 
-if [[ -f ".agents/plans/sutradhar-grill-decision-log.md" ]]; then
-  echo "[ok] decision log found"
+if [[ -f "README.md" ]]; then
+  echo "[ok] README found"
 else
-  echo "[warn] decision log missing"
+  echo "[warn] README missing"
 fi
 
 if command -v rg >/dev/null 2>&1; then
@@ -29,7 +29,7 @@ fi
 cat <<'NEXT'
 
 Next:
-1. Read .agents/plans/sutradhar-grill-decision-log.md
-2. Read .agents/plans/sutradhar-comprehensive-implementation-plan.md
-3. Update .agents/tracker.md item to IN_PROGRESS before changes
+1. Run make verify or make -f Makefile.windows verify
+2. Add Buf and contract manifests before proto generation work
+3. Keep generated outputs reproducible and checked by local verification
 NEXT

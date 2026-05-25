@@ -13,14 +13,6 @@ It owns:
 
 It does not own service runtime behavior, Narada orchestration logic, provider SDK integrations, deployment manifests, or environment-specific authorization policy.
 
-## Current State
-
-The repository is in bootstrap. Read the local planning files before implementation:
-
-- `.agents/plans/sutradhar-grill-decision-log.md`
-- `.agents/plans/sutradhar-comprehensive-implementation-plan.md`
-- `.agents/tracker.md`
-
 ## Local Commands
 
 Unix-like systems, Git Bash, WSL, Linux, and macOS:
