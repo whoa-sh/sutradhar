@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.notification.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.notification.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/notification/v1;notificationv1";
+
+import "google/protobuf/timestamp.proto";
+import "sh/whoa/sutradhar/common/v1/idempotency_context.proto";
+import "sh/whoa/sutradhar/common/v1/metadata.proto";
+import "sh/whoa/sutradhar/common/v1/tenant_context.proto";
+import "sh/whoa/sutradhar/common/v1/trace_context.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_target.proto";
+import "sh/whoa/sutradhar/notification/v1/recipient_ref.proto";
+
+message NotificationRequest {
+  common.v1.TenantContext tenant_context = 1;
+  common.v1.TraceContext trace_context = 2;
+  string request_id = 3;
+  string source_system = 4;
+  string source_event_id = 5;
+  common.v1.IdempotencyContext idempotency_context = 6;
+  NotificationPriority priority = 7;
+  NotificationChannel channel = 8;
+  RecipientRef recipient_ref = 9;
+  NotificationTarget target = 10;
+  common.v1.Metadata template_variables = 11;
+  common.v1.Metadata metadata = 12;
+  google.protobuf.Timestamp requested_at = 13;
+}

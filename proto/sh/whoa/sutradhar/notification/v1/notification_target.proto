@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package sh.whoa.sutradhar.notification.v1;
+
+option java_multiple_files = true;
+option java_package = "sh.whoa.sutradhar.notification.v1";
+option go_package = "github.com/whoa-sh/sutradhar/packages/go/sh/whoa/sutradhar/notification/v1;notificationv1";
+
+import "sh/whoa/sutradhar/common/v1/common_enums.proto";
+import "sh/whoa/sutradhar/notification/v1/notification_enums.proto";
+
+message EmailTarget {
+  string email_address = 1;
+  string display_name = 2;
+}
+
+message SmsTarget {
+  string phone_number_e164 = 1;
+}
+
+message PushTarget {
+  oneof destination {
+    string device_ref = 1;
+    string device_token = 2;
+  }
+  PushPlatform platform = 3;
+}
+
+message WebhookTarget {
+  oneof destination {
+    string endpoint_ref = 1;
+    string url = 2;
+  }
+}
+
+message NotificationTarget {
+  NotificationTargetKind kind = 1;
+  common.v1.SensitivityClass sensitivity = 2;
+  oneof target {
+    EmailTarget email = 10;
+    SmsTarget sms = 11;
+    PushTarget push = 12;
+    WebhookTarget webhook = 13;
+  }
+}
