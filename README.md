@@ -132,3 +132,25 @@ Recommended commit boundaries:
 Snapshots publish from `master` only for Maven and npm packages.
 
 Immutable releases use a manual `vX.Y.Z` workflow, validate committed package versions, publish Maven/npm artifacts, and create the Git tag for Go module consumption.
+
+## CI Hardening
+
+GitHub Actions workflows:
+
+- `.github/workflows/ci.yml`
+  - runs on PRs and `master`,
+  - enforces `buf lint`,
+  - enforces generated output freshness (`buf generate` + `git diff --exit-code`),
+  - runs JVM/TypeScript/Go parity tests.
+- `.github/workflows/snapshot.yml`
+  - separate snapshot lane from `master` / manual dispatch,
+  - runs strict repo verification before publish steps.
+- `.github/workflows/release.yml`
+  - manual immutable release lane,
+  - requires `version` input in `vX.Y.Z`,
+  - validates full preflight before creating/pushing the exact tag.
+
+Local equivalent before opening PR:
+
+- Unix-like: `./scripts/verify.sh`
+- PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1`
