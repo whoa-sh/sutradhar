@@ -179,3 +179,55 @@ rules:
     path: template.render_result.channel
     severity: error
     description: render result channel must not be UNSPECIFIED.
+  - ruleId: PROVIDER_CMD_REQUIRED_REQUEST_ID
+    path: provider.delivery_command.request_id
+    severity: error
+    description: provider delivery command request_id is mandatory.
+  - ruleId: PROVIDER_CMD_REQUIRED_DELIVERY_TASK_ID
+    path: provider.delivery_command.delivery_task_id
+    severity: error
+    description: delivery_task_id is mandatory in delivery command.
+  - ruleId: PROVIDER_CMD_REQUIRED_ATTEMPT_ID
+    path: provider.delivery_command.attempt_id
+    severity: error
+    description: attempt_id is mandatory in delivery command.
+  - ruleId: PROVIDER_CMD_REQUIRED_CHANNEL
+    path: provider.delivery_command.channel
+    severity: error
+    description: command channel must not be UNSPECIFIED.
+  - ruleId: PROVIDER_CMD_REQUIRED_PRIORITY
+    path: provider.delivery_command.priority
+    severity: error
+    description: command priority must not be UNSPECIFIED.
+  - ruleId: PROVIDER_CMD_REQUIRED_TARGET
+    path: provider.delivery_command.target
+    severity: error
+    description: command target is mandatory.
+  - ruleId: PROVIDER_EVENT_REQUIRED_REQUEST_ID
+    path: provider.delivery_event.request_id
+    severity: error
+    description: delivery event request_id is mandatory.
+  - ruleId: PROVIDER_EVENT_REQUIRED_DELIVERY_TASK_ID
+    path: provider.delivery_event.delivery_task_id
+    severity: error
+    description: delivery event delivery_task_id is mandatory.
+  - ruleId: PROVIDER_EVENT_REQUIRED_ATTEMPT_ID
+    path: provider.delivery_event.attempt_id
+    severity: error
+    description: delivery event attempt_id is mandatory.
+  - ruleId: PROVIDER_EVENT_REQUIRED_CHANNEL
+    path: provider.delivery_event.channel
+    severity: error
+    description: delivery event channel must not be UNSPECIFIED.
+  - ruleId: PROVIDER_EVENT_REQUIRED_PROVIDER
+    path: provider.delivery_event.provider
+    severity: error
+    description: provider type must not be UNSPECIFIED.
+  - ruleId: PROVIDER_EVENT_REQUIRED_STATUS
+    path: provider.delivery_event.status
+    severity: error
+    description: provider status must not be UNSPECIFIED.
+  - ruleId: PROVIDER_EVENT_REQUIRED_OBSERVED_AT
+    path: provider.delivery_event.observed_at
+    severity: error
+    description: observed_at is mandatory in delivery event.

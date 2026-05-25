@@ -65,6 +65,46 @@ topics:
     stage: delivery-event
     channel: webhook
     owner: provider-gateway
+  - name: notification.delivery.retry.critical.email
+    stage: delivery-retry
+    priority: critical
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.retry.high.email
+    stage: delivery-retry
+    priority: high
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.retry.normal.email
+    stage: delivery-retry
+    priority: normal
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.retry.low.email
+    stage: delivery-retry
+    priority: low
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.dlq.critical.email
+    stage: delivery-dlq
+    priority: critical
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.dlq.high.email
+    stage: delivery-dlq
+    priority: high
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.dlq.normal.email
+    stage: delivery-dlq
+    priority: normal
+    channel: email
+    owner: notification-streams
+  - name: notification.delivery.dlq.low.email
+    stage: delivery-dlq
+    priority: low
+    channel: email
+    owner: notification-streams
   - name: notification.lifecycle.events
     stage: lifecycle
     owner: notification-streams
