@@ -29,6 +29,26 @@ jobs:
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
+
       - name: Full verification
         run: ./scripts/verify.sh
 
@@ -51,4 +71,3 @@ jobs:
           VERSION="${{ needs.preflight.outputs.version }}"
           git tag "$VERSION"
           git push origin "$VERSION"
-
