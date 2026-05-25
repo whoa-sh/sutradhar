@@ -31,8 +31,27 @@ jobs:
         with:
           go-version: "1.22"
 
+      - name: Cache Go Modules and Build Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
       - name: Setup Buf CLI
         uses: bufbuild/buf-setup-action@v1
+
+      - name: Cache Buf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
 
       - name: Lint Protobuf Contracts (Buf)
         run: buf lint
