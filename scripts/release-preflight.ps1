@@ -41,6 +41,39 @@ try {
     }
     Write-Host "[ok] tooling baseline"
 
+    $releaseVersion = $Version.Substring(1)
+    $gradleVersionLine = (Get-Content build.gradle.kts | Select-String -Pattern '^\s*version\s*=' | Select-Object -First 1).Line
+    $gradleVersion = [regex]::Match($gradleVersionLine, '"([^"]+)"').Groups[1].Value
+    $npmPackage = Get-Content packages/typescript/package.json -Raw | ConvertFrom-Json
+    $npmVersion = $npmPackage.version
+
+    if ($gradleVersion -ne $releaseVersion -or $npmVersion -ne $releaseVersion) {
+        throw "Committed versions do not match release version $releaseVersion."
+    }
+    Write-Host "[ok] committed versions match release input"
+
+    $mavenMetadataUrl = $env:MAVEN_METADATA_URL
+    if ($mavenMetadataUrl) {
+        $headers = @{}
+        if ($env:GITHUB_TOKEN) {
+            $headers["Authorization"] = "Bearer $($env:GITHUB_TOKEN)"
+        }
+        $metadata = Invoke-WebRequest -Uri $mavenMetadataUrl -Headers $headers -UseBasicParsing
+        if ($metadata.Content -match "<version>$releaseVersion</version>") {
+            throw "Maven version already exists in registry: $releaseVersion"
+        }
+        Write-Host "[ok] Maven registry version does not exist"
+    }
+
+    $npmPackageName = $env:NPM_PACKAGE_NAME
+    if ($npmPackageName) {
+        & npm view "$npmPackageName@$releaseVersion" version *> $null
+        if ($LASTEXITCODE -eq 0) {
+            throw "NPM version already exists in registry: $npmPackageName@$releaseVersion"
+        }
+        Write-Host "[ok] NPM registry version does not exist"
+    }
+
     Write-Host "Preflight passed."
 } finally {
     Pop-Location

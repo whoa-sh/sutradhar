@@ -78,4 +78,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          BASE_VERSION="$(node -p "require('./package.json').version")"
+          SNAPSHOT_VERSION="${BASE_VERSION}-snapshot.${GITHUB_RUN_NUMBER}"
+          node -e "const fs=require('fs');const p=require('./package.json');p.version='${SNAPSHOT_VERSION}';fs.writeFileSync('./package.json', JSON.stringify(p,null,2)+'\n');"
           npm publish --tag snapshot --access restricted
