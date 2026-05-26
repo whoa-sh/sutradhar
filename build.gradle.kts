@@ -2,6 +2,7 @@ plugins {
     base
     java
     `maven-publish`
+    id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 group = "sh.whoa.sutradhar"
@@ -140,6 +141,44 @@ publishing {
                     .orElse(providers.environmentVariable("MAVEN_PASSWORD"))
                     .orNull
             }
+        }
+    }
+}
+
+mavenPublishing {
+    coordinates("sh.whoa.sutradhar", "sutradhar-proto-jvm", project.version.toString())
+    publishToMavenCentral(automaticRelease = true)
+
+    if (providers.gradleProperty("signingInMemoryKey").isPresent) {
+        signAllPublications()
+    }
+
+    pom {
+        name.set("sutradhar-proto-jvm")
+        description.set("Shared protobuf JVM contracts and helpers for whoa.sh notification platform.")
+        inceptionYear.set("2026")
+        url.set("https://github.com/whoa-sh/sutradhar")
+
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/license/mit")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("whoa-sh")
+                name.set("whoa.sh")
+                url.set("https://github.com/whoa-sh")
+            }
+        }
+
+        scm {
+            connection.set("scm:git:https://github.com/whoa-sh/sutradhar.git")
+            developerConnection.set("scm:git:ssh://git@github.com/whoa-sh/sutradhar.git")
+            url.set("https://github.com/whoa-sh/sutradhar")
         }
     }
 }

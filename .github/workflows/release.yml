@@ -120,10 +120,52 @@ jobs:
         run: |
           npm publish --access restricted
 
+  publish-maven-central:
+    needs: release-preflight-verification
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment:
+      name: maven-central
+      url: https://central.sonatype.com/publishing/deployments
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Normalize signing password
+        id: signing
+        env:
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SIGNING_PASSWORD//[[:space:]]/}" ]]; then
+            echo "password=" >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "password<<EOF"
+              echo "$SIGNING_PASSWORD"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish JVM Artifact to Maven Central
+        run: ./gradlew --no-daemon publishAndReleaseToMavenCentral
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ steps.signing.outputs.password }}
+
   create-release-tag:
     needs:
       - release-preflight-verification
       - publish-release-maven-and-npm
+      - publish-maven-central
     runs-on: ubuntu-latest
     permissions:
       contents: write
