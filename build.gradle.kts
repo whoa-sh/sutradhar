@@ -121,14 +121,6 @@ tasks.named<Task>("check") {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-            groupId = project.group.toString()
-            artifactId = "sutradhar-proto-jvm"
-            version = project.version.toString()
-        }
-    }
     repositories {
         maven {
             name = "GitHubPackages"

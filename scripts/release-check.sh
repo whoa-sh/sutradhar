@@ -18,6 +18,15 @@ if ! command -v buf >/dev/null 2>&1; then
   echo "[fail] remediation: install buf and ensure it is on PATH." >&2
   exit 1
 fi
+
+for cmd in node go java; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "[fail] $cmd is required for full release validation." >&2
+    echo "[fail] remediation: install $cmd and ensure it is on PATH to avoid silently skipping parity tests." >&2
+    exit 1
+  fi
+done
+
 echo "[run] buf lint"
 buf lint
 echo "[run] buf generate + freshness check"

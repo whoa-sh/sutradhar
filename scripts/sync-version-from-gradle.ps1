@@ -15,8 +15,8 @@ try {
 
     $packagePath = Join-Path $root "packages/typescript/package.json"
     $content = Get-Content $packagePath -Raw
-    if ($content -match '"version"\s*:\s*"[^"]+"') {
-        $updated = $content -replace '"version"\s*:\s*"[^"]+"', ('"version": "' + $gradleVersion + '"')
+    if ($content -match '(?m)^[ \t]*"version"[ \t]*:[ \t]*"[^"]+"') {
+        $updated = $content -replace '(?m)^([ \t]*"version"[ \t]*:[ \t]*")[^"]+"', ('${1}' + $gradleVersion + '"')
         $utf8NoBom = New-Object System.Text.UTF8Encoding $false
         [System.IO.File]::WriteAllText($packagePath, $updated, $utf8NoBom)
         Write-Host "[ok] packages/typescript/package.json version set to $gradleVersion"
