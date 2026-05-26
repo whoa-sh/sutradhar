@@ -226,3 +226,19 @@ Integration and operations docs:
 Troubleshooting:
 
 - `docs/troubleshooting/developer-troubleshooting.md`
+
+## Security
+
+Security is handled via coordinated vulnerability disclosure.
+
+- Reporting channel: `security@whoa.sh`
+- Do not open public GitHub issues for suspected vulnerabilities.
+- Include reproduction details, affected contracts/packages, impact, and any proof-of-concept.
+- Preferred report content:
+  - affected version(s),
+  - exact file/path and package coordinates,
+  - step-by-step reproduction,
+  - expected vs actual behavior,
+  - blast radius and exploitability notes.
+
+For full policy, triage, and disclosure process, see `SECURITY.md`.
