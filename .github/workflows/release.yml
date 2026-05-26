@@ -48,6 +48,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
 
       - name: Setup Go 1.22
         uses: actions/setup-go@v5
@@ -119,14 +121,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
       - name: Setup Go 1.22
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
+      - name: Cache Go Modules and Build Cache (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\go\pkg\mod
+            ~\AppData\Local\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Setup Buf CLI
         uses: bufbuild/buf-action@v1
         with:
           setup_only: true
+      - name: Cache Buf (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\buf
+            ~\.cache\buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
       - name: Run Full Local Verification Script (PowerShell)
         shell: pwsh
         run: .\scripts\verify.ps1
@@ -164,6 +186,8 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://npm.pkg.github.com"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
       - name: Publish Maven Release (GitHub Packages)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -195,6 +219,23 @@ jobs:
           distribution: microsoft
           java-version: "21"
           cache: gradle
+      - name: Cache Go Modules and Build Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Cache Buf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
       - name: Normalize signing password
         id: signing
         env:
