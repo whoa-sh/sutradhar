@@ -3,7 +3,7 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$root = Resolve-Path (Join-Path $PSScriptRoot "..")
+$root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
 try {
     $gradleContent = Get-Content "build.gradle.kts" -Raw
