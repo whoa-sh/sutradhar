@@ -57,6 +57,10 @@ try {
     } else {
         Write-Host "[skip] TypeScript parity test (node or test file missing)"
     }
+    if ((Get-Command node -ErrorAction SilentlyContinue) -and (Test-Path "packages/typescript/src/sdk/upgrade-parity.test.mjs")) {
+        Push-Location "packages/typescript"
+        try { & node --test src/sdk/upgrade-parity.test.mjs; if ($LASTEXITCODE -ne 0) { throw "TypeScript upgrade parity failed: $LASTEXITCODE" } } finally { Pop-Location }
+    }
 
     if ((Get-Command go -ErrorAction SilentlyContinue) -and (Test-Path "packages/go/sh/whoa/sutradhar/sdk/v1/parity_test.go")) {
         Write-Host "[run] go test ./sh/whoa/sutradhar/sdk/v1"

@@ -58,6 +58,14 @@ else
   echo "[skip] TypeScript parity test (node or test file missing)"
 fi
 
+if command -v node >/dev/null 2>&1 && [[ -f "packages/typescript/src/sdk/upgrade-parity.test.mjs" ]]; then
+  echo "[run] node --test src/sdk/upgrade-parity.test.mjs"
+  (cd packages/typescript && node --test src/sdk/upgrade-parity.test.mjs)
+  echo "[ok] TypeScript upgrade parity test"
+else
+  echo "[skip] TypeScript upgrade parity test (node or test file missing)"
+fi
+
 if command -v go >/dev/null 2>&1 && [[ -f "packages/go/sh/whoa/sutradhar/sdk/v1/parity_test.go" ]]; then
   echo "[run] go test ./sh/whoa/sutradhar/sdk/v1"
   (cd packages/go && go test ./sh/whoa/sutradhar/sdk/v1)

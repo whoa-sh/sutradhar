@@ -3,7 +3,7 @@ SHELL := bash
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release suite-local suite-contracts suite-examples
+.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release release-check suite-local suite-contracts suite-examples
 
 help:
 	@printf '%s\n' "Sutradhar make targets"
@@ -14,6 +14,7 @@ help:
 	@printf '%s\n' "  make smoke-examples                   - run JVM + TypeScript + Go examples"
 	@printf '%s\n' "  make prototype                        - lint + generate + verify (non-release loop)"
 	@printf '%s\n' "  make preflight-release VERSION=vX.Y.Z - release preflight checks"
+	@printf '%s\n' "  make release-check VERSION=vX.Y.Z     - full release validation suite"
 	@printf '%s\n' ""
 	@printf '%s\n' "Command suites"
 	@printf '%s\n' "  make suite-contracts                  - proto-lint + generate"
@@ -64,3 +65,10 @@ preflight-release:
 		exit 1; \
 	fi
 	@./scripts/release-preflight.sh "$${VERSION}"
+
+release-check:
+	@if [ -z "$${VERSION:-}" ]; then \
+		echo "Set VERSION=vX.Y.Z. Example: make release-check VERSION=v0.1.0"; \
+		exit 1; \
+	fi
+	@./scripts/release-check.sh "$${VERSION}"
