@@ -44,7 +44,16 @@ echo "[ok] tooling baseline"
 
 MAVEN_VERSION="${VERSION#v}"
 GRADLE_VERSION="$(sed -nE 's/^[[:space:]]*version[[:space:]]*=[[:space:]]*"([^"]+)".*$/\1/p' build.gradle.kts | head -n1)"
-NPM_VERSION="$(node -p "require('./packages/typescript/package.json').version")"
+NPM_VERSION="$(sed -nE 's/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*$/\1/p' packages/typescript/package.json | head -n1)"
+
+if [[ -z "$GRADLE_VERSION" ]]; then
+  echo "Could not find version in build.gradle.kts" >&2
+  exit 1
+fi
+if [[ -z "$NPM_VERSION" ]]; then
+  echo "Could not find version in packages/typescript/package.json" >&2
+  exit 1
+fi
 
 if [[ "$GRADLE_VERSION" != "$MAVEN_VERSION" || "$NPM_VERSION" != "$MAVEN_VERSION" ]]; then
   echo "Committed versions do not match release version $MAVEN_VERSION." >&2
@@ -58,9 +67,16 @@ if [[ -n "${MAVEN_METADATA_URL:-}" ]]; then
     echo "curl is required for Maven registry preflight check." >&2
     exit 1
   fi
-  METADATA="$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN:-}" "$MAVEN_METADATA_URL" || true)"
-  if echo "$METADATA" | grep -Fq "<version>$MAVEN_VERSION</version>"; then
-    echo "Maven version already exists in registry: $MAVEN_VERSION" >&2
+  HTTP_STATUS="$(curl -sS -o /tmp/maven-metadata.xml -w "%{http_code}" -H "Authorization: Bearer ${GITHUB_TOKEN:-}" "$MAVEN_METADATA_URL" || true)"
+  if [[ "$HTTP_STATUS" == "200" ]]; then
+    if grep -Fq "<version>$MAVEN_VERSION</version>" /tmp/maven-metadata.xml; then
+      echo "Maven version already exists in registry: $MAVEN_VERSION" >&2
+      exit 1
+    fi
+  elif [[ "$HTTP_STATUS" == "404" ]]; then
+    :
+  else
+    echo "Maven registry check failed with HTTP status: $HTTP_STATUS" >&2
     exit 1
   fi
   echo "[ok] Maven registry version does not exist"

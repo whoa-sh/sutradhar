@@ -9,10 +9,14 @@ fi
 VERSION="${VERSION_TAG#v}"
 
 GRADLE_VERSION="$(sed -nE 's/^[[:space:]]*version[[:space:]]*=[[:space:]]*"([^"]+)".*$/\1/p' build.gradle.kts | head -n1)"
-NPM_VERSION="$(node -p "require('./packages/typescript/package.json').version")"
+NPM_VERSION="$(sed -nE 's/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*$/\1/p' packages/typescript/package.json | head -n1)"
 
 if [[ -z "$GRADLE_VERSION" ]]; then
   echo "Could not find version in build.gradle.kts" >&2
+  exit 1
+fi
+if [[ -z "$NPM_VERSION" ]]; then
+  echo "Could not find version in packages/typescript/package.json" >&2
   exit 1
 fi
 
