@@ -61,7 +61,7 @@ suite-contracts: proto-lint generate
 suite-examples: smoke-examples
 	@Write-Host "[ok] suite-examples complete"
 
-suite-local: suite-contracts verify suite-examples
+suite-local: suite-contracts verify
 	@Write-Host "[ok] suite-local complete"
 
 preflight-release:

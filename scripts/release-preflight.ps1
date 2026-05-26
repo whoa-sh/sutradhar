@@ -58,8 +58,18 @@ try {
         if ($env:GITHUB_TOKEN) {
             $headers["Authorization"] = "Bearer $($env:GITHUB_TOKEN)"
         }
-        $metadata = Invoke-WebRequest -Uri $mavenMetadataUrl -Headers $headers -UseBasicParsing
-        if ($metadata.Content -match "<version>$releaseVersion</version>") {
+        $metadataContent = ""
+        try {
+            $response = Invoke-WebRequest -Uri $mavenMetadataUrl -Headers $headers -UseBasicParsing
+            $metadataContent = $response.Content
+        } catch {
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 404) {
+                $metadataContent = ""
+            } else {
+                throw "Maven metadata lookup failed: $($_.Exception.Message)"
+            }
+        }
+        if ($metadataContent -match "<version>$releaseVersion</version>") {
             throw "Maven version already exists in registry: $releaseVersion"
         }
         Write-Host "[ok] Maven registry version does not exist"

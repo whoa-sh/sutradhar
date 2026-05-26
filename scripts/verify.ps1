@@ -37,7 +37,7 @@ try {
 
     if ((Test-Path "build.gradle.kts") -and (Test-Path "gradlew.bat")) {
         Write-Host "[run] .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-        & .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
+        & .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest
         if ($LASTEXITCODE -ne 0) { throw "gradlew test failed with exit code $LASTEXITCODE" }
         Write-Host "[ok] JVM parity test"
     } else {
@@ -76,13 +76,9 @@ try {
         Write-Host "[skip] Go parity test (go or test file missing)"
     }
 
-    if ((Get-Command node -ErrorAction SilentlyContinue) -and (Get-Command go -ErrorAction SilentlyContinue) -and (Test-Path "gradlew.bat")) {
-        Write-Host "[run] .\scripts\smoke-examples.ps1"
-        & .\scripts\smoke-examples.ps1
-        if ($LASTEXITCODE -ne 0) { throw "example smoke checks failed with exit code $LASTEXITCODE" }
-    } else {
-        Write-Host "[skip] example smoke checks (toolchain missing)"
-    }
+    Write-Host "[run] .\scripts\smoke-examples.ps1"
+    & .\scripts\smoke-examples.ps1
+    if ($LASTEXITCODE -ne 0) { throw "example smoke checks failed with exit code $LASTEXITCODE" }
 
     Write-Host "Verification completed."
 } finally {

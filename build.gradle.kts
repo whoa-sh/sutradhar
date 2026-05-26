@@ -16,7 +16,11 @@ java {
 sourceSets {
     named("main") {
         java.srcDir("src/main/java")
+    }
+    create("examples") {
         java.srcDir("examples/jvm/src/main/java")
+        compileClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath
+        runtimeClasspath += sourceSets["main"].output + sourceSets["main"].runtimeClasspath
     }
     named("test") {
         java.srcDir("packages/jvm/src/test/java")
@@ -36,7 +40,7 @@ tasks.test {
 tasks.register<JavaExec>("runM11JvmExample") {
     group = "application"
     description = "Runs the M11 JVM consumer example."
-    classpath = sourceSets["main"].runtimeClasspath
+    classpath = sourceSets["examples"].runtimeClasspath
     mainClass.set("sh.whoa.sutradhar.examples.M11ConsumerExample")
 }
 
@@ -128,10 +132,12 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/whoa-sh/sutradhar")
             credentials {
-                username = providers.environmentVariable("GITHUB_ACTOR").orNull
-                    ?: providers.environmentVariable("MAVEN_USERNAME").orNull
-                password = providers.environmentVariable("GITHUB_TOKEN").orNull
-                    ?: providers.environmentVariable("MAVEN_PASSWORD").orNull
+                username = providers.environmentVariable("GITHUB_ACTOR")
+                    .orElse(providers.environmentVariable("MAVEN_USERNAME"))
+                    .orNull
+                password = providers.environmentVariable("GITHUB_TOKEN")
+                    .orElse(providers.environmentVariable("MAVEN_PASSWORD"))
+                    .orNull
             }
         }
     }

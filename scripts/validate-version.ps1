@@ -11,9 +11,13 @@ if ($Version -notmatch '^v\d+\.\d+\.\d+$') {
 }
 
 $normalized = $Version.Substring(1)
-$gradleLine = Select-String -Path "build.gradle.kts" -Pattern '^version = "(.+)"$'
-$gradleVersion = $gradleLine.Matches[0].Groups[1].Value
-$npmVersion = node -p "require('./packages/typescript/package.json').version"
+$gradleContent = Get-Content "build.gradle.kts" -Raw
+if ($gradleContent -match '(?m)^\s*version\s*=\s*"([^"]+)"') {
+    $gradleVersion = $Matches[1]
+} else {
+    throw "Could not find version in build.gradle.kts"
+}
+$npmVersion = (Get-Content "packages/typescript/package.json" -Raw | ConvertFrom-Json).version
 
 if ($gradleVersion -ne $normalized) {
     throw "Gradle version mismatch: expected $normalized, found $gradleVersion"

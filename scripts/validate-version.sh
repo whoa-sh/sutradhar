@@ -8,8 +8,13 @@ if [[ ! "$VERSION_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 VERSION="${VERSION_TAG#v}"
 
-GRADLE_VERSION="$(grep -E '^version = ' build.gradle.kts | sed -E 's/version = "([^"]+)"/\1/')"
+GRADLE_VERSION="$(sed -nE 's/^[[:space:]]*version[[:space:]]*=[[:space:]]*"([^"]+)".*$/\1/p' build.gradle.kts | head -n1)"
 NPM_VERSION="$(node -p "require('./packages/typescript/package.json').version")"
+
+if [[ -z "$GRADLE_VERSION" ]]; then
+  echo "Could not find version in build.gradle.kts" >&2
+  exit 1
+fi
 
 if [[ "$GRADLE_VERSION" != "$VERSION" ]]; then
   echo "Gradle version mismatch: expected $VERSION, found $GRADLE_VERSION" >&2

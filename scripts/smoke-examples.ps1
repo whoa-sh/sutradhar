@@ -6,21 +6,33 @@ $ErrorActionPreference = "Stop"
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Push-Location $root
 try {
-    Write-Host "[run] JVM example"
-    & .\gradlew.bat --no-daemon -q runM11JvmExample
-    if ($LASTEXITCODE -ne 0) { throw "JVM example failed with $LASTEXITCODE" }
+    if (Test-Path "gradlew.bat") {
+        Write-Host "[run] JVM example"
+        & .\gradlew.bat --no-daemon -q runM11JvmExample
+        if ($LASTEXITCODE -ne 0) { throw "JVM example failed with $LASTEXITCODE" }
+    } else {
+        Write-Host "[skip] JVM example (gradlew.bat missing)"
+    }
 
-    Write-Host "[run] TypeScript example"
-    & node examples\typescript\consumer-example.mjs
-    if ($LASTEXITCODE -ne 0) { throw "TypeScript example failed with $LASTEXITCODE" }
+    if (Get-Command node -ErrorAction SilentlyContinue) {
+        Write-Host "[run] TypeScript example"
+        & node examples\typescript\consumer-example.mjs
+        if ($LASTEXITCODE -ne 0) { throw "TypeScript example failed with $LASTEXITCODE" }
+    } else {
+        Write-Host "[skip] TypeScript example (node missing)"
+    }
 
-    Write-Host "[run] Go example"
-    Push-Location packages\go
-    try {
-        & go run .\examples\m11
-        if ($LASTEXITCODE -ne 0) { throw "Go example failed with $LASTEXITCODE" }
-    } finally {
-        Pop-Location
+    if (Get-Command go -ErrorAction SilentlyContinue) {
+        Write-Host "[run] Go example"
+        Push-Location packages\go
+        try {
+            & go run .\examples\m11
+            if ($LASTEXITCODE -ne 0) { throw "Go example failed with $LASTEXITCODE" }
+        } finally {
+            Pop-Location
+        }
+    } else {
+        Write-Host "[skip] Go example (go missing)"
     }
 
     Write-Host "[ok] example smoke checks"
