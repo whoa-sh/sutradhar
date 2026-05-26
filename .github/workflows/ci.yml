@@ -62,7 +62,9 @@ jobs:
         run: ./scripts/check-docs.sh
 
       - name: Enforce Protobuf Breaking Compatibility Against Master
-        run: buf breaking --against '.git#branch=master'
+        run: |
+          git fetch origin master:refs/remotes/origin/master
+          buf breaking --against '.git#branch=origin/master'
 
       - name: Check Generated Output Freshness
         run: |
