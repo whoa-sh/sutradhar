@@ -90,3 +90,14 @@ Before opening a PR:
 - Unix-like: `./scripts/verify.sh`
 - PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1`
 
+## Version Alignment For Release Consumers
+
+Release preparation uses Gradle version as source-of-truth.
+
+1. Set release version in `build.gradle.kts`.
+2. Sync TypeScript package version from Gradle:
+   - Unix-like: `make sync-version`
+   - PowerShell: `make -f Makefile.windows sync-version`
+3. Validate release version consistency:
+   - Unix-like: `./scripts/validate-version.sh vX.Y.Z`
+   - PowerShell: `.\scripts\validate-version.ps1 -Version vX.Y.Z`

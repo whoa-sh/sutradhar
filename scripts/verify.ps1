@@ -19,14 +19,14 @@ try {
 
     foreach ($path in $checks) {
         if (-not (Test-Path $path)) {
-            throw "Missing required file: $path"
+            throw "[fail] Missing required file: $path`n[fail] remediation: restore the missing repository file before running verify."
         }
         Write-Host "[ok] $path"
     }
 
     if (Test-Path "buf.yaml") {
         if (-not (Get-Command buf -ErrorAction SilentlyContinue)) {
-            throw "buf.yaml exists but `buf` CLI is not available."
+            throw "[fail] buf.yaml exists but `buf` CLI is not available.`n[fail] remediation: install buf and ensure it is on PATH."
         }
         Write-Host "[run] buf lint"
         & buf lint
@@ -58,8 +58,17 @@ try {
         Write-Host "[skip] TypeScript parity test (node or test file missing)"
     }
     if ((Get-Command node -ErrorAction SilentlyContinue) -and (Test-Path "packages/typescript/src/sdk/upgrade-parity.test.mjs")) {
+        Write-Host "[run] node --test src/sdk/upgrade-parity.test.mjs"
         Push-Location "packages/typescript"
-        try { & node --test src/sdk/upgrade-parity.test.mjs; if ($LASTEXITCODE -ne 0) { throw "TypeScript upgrade parity failed: $LASTEXITCODE" } } finally { Pop-Location }
+        try {
+            & node --test src/sdk/upgrade-parity.test.mjs
+            if ($LASTEXITCODE -ne 0) { throw "TypeScript upgrade parity failed with exit code $LASTEXITCODE" }
+            Write-Host "[ok] TypeScript upgrade parity test"
+        } finally {
+            Pop-Location
+        }
+    } else {
+        Write-Host "[skip] TypeScript upgrade parity test (node or test file missing)"
     }
 
     if ((Get-Command go -ErrorAction SilentlyContinue) -and (Test-Path "packages/go/sh/whoa/sutradhar/sdk/v1/parity_test.go")) {
@@ -80,7 +89,7 @@ try {
     & .\scripts\smoke-examples.ps1
     if ($LASTEXITCODE -ne 0) { throw "example smoke checks failed with exit code $LASTEXITCODE" }
 
-    Write-Host "Verification completed."
+    Write-Host "[ok] verification completed"
 } finally {
     Pop-Location
 }

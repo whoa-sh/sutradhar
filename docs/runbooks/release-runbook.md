@@ -7,10 +7,15 @@ Immutable production release for Maven and npm packages using GitHub Packages an
 ## Preconditions
 
 1. Release commit is already on `master`.
-2. `build.gradle.kts` version equals `X.Y.Z`.
-3. `packages/typescript/package.json` version equals `X.Y.Z`.
+2. `build.gradle.kts` version equals `X.Y.Z` (source-of-truth).
+3. `packages/typescript/package.json` version equals `X.Y.Z` after sync.
 4. Target tag `vX.Y.Z` does not already exist.
 5. Required repository permissions/secrets are configured for package publish.
+
+Version sync step before release:
+
+- Unix-like: `make sync-version`
+- PowerShell: `make -f Makefile.windows sync-version`
 
 ## Execution
 
@@ -39,4 +44,3 @@ Immutable production release for Maven and npm packages using GitHub Packages an
 - Do not mutate files during release workflow.
 - Do not reuse an existing version tag.
 - On failure, fix source and rerun with a new commit. Keep release immutable.
-

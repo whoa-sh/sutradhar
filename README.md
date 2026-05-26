@@ -89,6 +89,7 @@ make suite-contracts
 make suite-examples
 make suite-local
 make docs-check
+make sync-version
 make polish
 ```
 
@@ -103,6 +104,7 @@ make -f Makefile.windows suite-contracts
 make -f Makefile.windows suite-examples
 make -f Makefile.windows suite-local
 make -f Makefile.windows docs-check
+make -f Makefile.windows sync-version
 make -f Makefile.windows polish
 ```
 
@@ -118,6 +120,7 @@ make -f Makefile.windows polish
 - `suite-examples`: grouped examples loop (`smoke-examples`).
 - `suite-local`: full local suite (`suite-contracts + verify + suite-examples`).
 - `preflight-release VERSION=vX.Y.Z`: strict release input and workspace preflight checks.
+- `sync-version`: syncs `packages/typescript/package.json` version from Gradle root version.
 
 ## Consumer Examples (M11)
 

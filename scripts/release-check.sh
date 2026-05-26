@@ -3,7 +3,8 @@ set -euo pipefail
 
 VERSION="${1:-}"
 if [[ -z "$VERSION" ]]; then
-  echo "Usage: scripts/release-check.sh vX.Y.Z" >&2
+  echo "[fail] Usage: scripts/release-check.sh vX.Y.Z" >&2
+  echo "[fail] remediation: pass an immutable release tag input, for example v0.1.0." >&2
   exit 1
 fi
 
@@ -13,7 +14,8 @@ cd "$ROOT"
 ./scripts/release-preflight.sh "$VERSION"
 
 if ! command -v buf >/dev/null 2>&1; then
-  echo "Error: buf CLI is required for release checks." >&2
+  echo "[fail] buf CLI is required for release checks." >&2
+  echo "[fail] remediation: install buf and ensure it is on PATH." >&2
   exit 1
 fi
 echo "[run] buf lint"
