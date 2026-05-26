@@ -42,7 +42,9 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Setup Buf CLI
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
 
       - name: Cache Buf
         uses: actions/cache@v4
@@ -103,6 +105,8 @@ jobs:
         with:
           go-version: "1.22"
       - name: Setup Buf CLI
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
       - name: Run Suite Local
         run: make suite-local
