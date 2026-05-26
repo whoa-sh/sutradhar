@@ -180,6 +180,13 @@ Release invariants:
 - `build.gradle.kts` version and `packages/typescript/package.json` version must already match `X.Y.Z` before release workflow runs.
 - Go release remains tag-driven (`vX.Y.Z`); no Go snapshot publishing lane.
 
+Version source-of-truth:
+- Gradle root version in `build.gradle.kts` is authoritative.
+- Sync TypeScript package version from Gradle before release/snapshot prep:
+  - Unix-like: `make sync-version`
+  - PowerShell: `make -f Makefile.windows sync-version`
+- Release checks still enforce committed cross-ecosystem version match.
+
 Release governance docs:
 - `docs/governance/compatibility-policy.md`
 - `docs/integration/contract-support-matrix.md`

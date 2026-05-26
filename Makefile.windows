@@ -3,7 +3,7 @@ SHELL := powershell.exe
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate docs-check verify smoke-examples prototype preflight-release release-check polish suite-local suite-contracts suite-examples
+.PHONY: help dev proto-lint generate docs-check verify smoke-examples prototype preflight-release release-check sync-version polish suite-local suite-contracts suite-examples
 
 help:
 	@Write-Host "Sutradhar Windows make targets"
@@ -16,6 +16,7 @@ help:
 	@Write-Host "  make -f Makefile.windows prototype"
 	@Write-Host "  make -f Makefile.windows preflight-release VERSION=vX.Y.Z"
 	@Write-Host "  make -f Makefile.windows release-check VERSION=vX.Y.Z"
+	@Write-Host "  make -f Makefile.windows sync-version"
 	@Write-Host "  make -f Makefile.windows polish"
 	@Write-Host ""
 	@Write-Host "Command suites"
@@ -71,6 +72,9 @@ preflight-release:
 release-check:
 	@if (-not "$(VERSION)") { throw "Set VERSION=vX.Y.Z. Example: make -f Makefile.windows release-check VERSION=v0.1.0"; }
 	@.\scripts\release-check.ps1 -Version "$(VERSION)"
+
+sync-version:
+	@.\scripts\sync-version-from-gradle.ps1
 
 polish: docs-check verify
 	@Write-Host "[ok] polish checks complete"

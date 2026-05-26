@@ -1,6 +1,6 @@
 {
   "name": "@whoa-sh/sutradhar-proto",
-  "version": "0.1.0-snapshot",
+  "version": "0.1.0-SNAPSHOT",
   "private": false,
   "type": "module",
   "scripts": {

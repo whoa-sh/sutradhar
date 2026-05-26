@@ -24,10 +24,18 @@ Operational helper scripts for local execution.
   - preflight checks for a release version input in `vX.Y.Z` format.
 - `release-preflight.sh`
   - Unix-like preflight checks for a release version input in `vX.Y.Z` format.
+- `release-check.ps1`
+  - full release validation suite (preflight + lint/generate freshness + verify).
+- `release-check.sh`
+  - Unix-like full release validation suite (preflight + lint/generate freshness + verify).
 - `validate-version.ps1`
   - checks committed Gradle and npm versions match the provided release tag (`vX.Y.Z`).
 - `validate-version.sh`
   - Unix-like committed version cross-check for Gradle and npm release versions.
+- `sync-version-from-gradle.ps1`
+  - updates TypeScript package version from Gradle root version (single-source workflow).
+- `sync-version-from-gradle.sh`
+  - Unix-like TypeScript version sync from Gradle root version.
 
 ## Preferred Quick Path
 
@@ -43,6 +51,8 @@ make prototype
 make suite-contracts
 make suite-examples
 make suite-local
+make release-check VERSION=vX.Y.Z
+make sync-version
 make polish
 ```
 
@@ -58,6 +68,8 @@ make -f Makefile.windows prototype
 make -f Makefile.windows suite-contracts
 make -f Makefile.windows suite-examples
 make -f Makefile.windows suite-local
+make -f Makefile.windows release-check VERSION=vX.Y.Z
+make -f Makefile.windows sync-version
 make -f Makefile.windows polish
 ```
 
@@ -78,6 +90,7 @@ Unix-like:
 ./scripts/dev.sh
 ./scripts/verify.sh
 ./scripts/release-preflight.sh v0.1.0
+./scripts/release-check.sh v0.1.0
 ./scripts/validate-version.sh v0.1.0
 ```
 
@@ -87,6 +100,7 @@ Windows PowerShell:
 .\scripts\dev.ps1
 .\scripts\verify.ps1
 .\scripts\release-preflight.ps1 -Version v0.1.0
+.\scripts\release-check.ps1 -Version v0.1.0
 .\scripts\validate-version.ps1 -Version v0.1.0
 .\scripts\smoke-examples.ps1
 ```

@@ -3,7 +3,7 @@ SHELL := bash
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate docs-check verify smoke-examples prototype preflight-release release-check polish suite-local suite-contracts suite-examples
+.PHONY: help dev proto-lint generate docs-check verify smoke-examples prototype preflight-release release-check sync-version polish suite-local suite-contracts suite-examples
 
 help:
 	@printf '%s\n' "Sutradhar make targets"
@@ -16,6 +16,7 @@ help:
 	@printf '%s\n' "  make prototype                        - lint + generate + verify (non-release loop)"
 	@printf '%s\n' "  make preflight-release VERSION=vX.Y.Z - release preflight checks"
 	@printf '%s\n' "  make release-check VERSION=vX.Y.Z     - full release validation suite"
+	@printf '%s\n' "  make sync-version                     - sync npm package version from Gradle version"
 	@printf '%s\n' "  make polish                           - docs-check + verify"
 	@printf '%s\n' ""
 	@printf '%s\n' "Command suites"
@@ -77,6 +78,9 @@ release-check:
 		exit 1; \
 	fi
 	@./scripts/release-check.sh "$${VERSION}"
+
+sync-version:
+	@./scripts/sync-version-from-gradle.sh
 
 polish: docs-check verify
 	@printf '%s\n' "[ok] polish checks complete"
