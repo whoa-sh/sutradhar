@@ -42,4 +42,40 @@ if [[ -f "buf.yaml" ]] && ! command -v buf >/dev/null 2>&1; then
 fi
 echo "[ok] tooling baseline"
 
+MAVEN_VERSION="${VERSION#v}"
+GRADLE_VERSION="$(sed -nE 's/^[[:space:]]*version[[:space:]]*=[[:space:]]*"([^"]+)".*$/\1/p' build.gradle.kts | head -n1)"
+NPM_VERSION="$(node -p "require('./packages/typescript/package.json').version")"
+
+if [[ "$GRADLE_VERSION" != "$MAVEN_VERSION" || "$NPM_VERSION" != "$MAVEN_VERSION" ]]; then
+  echo "Committed versions do not match release version $MAVEN_VERSION." >&2
+  exit 1
+fi
+echo "[ok] committed versions match release input"
+
+# Optional registry preflight checks (enabled in CI via env vars).
+if [[ -n "${MAVEN_METADATA_URL:-}" ]]; then
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required for Maven registry preflight check." >&2
+    exit 1
+  fi
+  METADATA="$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN:-}" "$MAVEN_METADATA_URL" || true)"
+  if echo "$METADATA" | grep -Fq "<version>$MAVEN_VERSION</version>"; then
+    echo "Maven version already exists in registry: $MAVEN_VERSION" >&2
+    exit 1
+  fi
+  echo "[ok] Maven registry version does not exist"
+fi
+
+if [[ -n "${NPM_PACKAGE_NAME:-}" ]]; then
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "npm is required for npm registry preflight check." >&2
+    exit 1
+  fi
+  if npm view "${NPM_PACKAGE_NAME}@${MAVEN_VERSION}" version >/dev/null 2>&1; then
+    echo "NPM version already exists in registry: ${NPM_PACKAGE_NAME}@${MAVEN_VERSION}" >&2
+    exit 1
+  fi
+  echo "[ok] NPM registry version does not exist"
+fi
+
 echo "Preflight passed."

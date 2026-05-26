@@ -12,13 +12,15 @@ cd "$ROOT"
 
 ./scripts/release-preflight.sh "$VERSION"
 
-if command -v buf >/dev/null 2>&1; then
-  echo "[run] buf lint"
-  buf lint
-  echo "[run] buf generate + freshness check"
-  buf generate
-  git diff --exit-code -- packages/go packages/typescript/src/generated
+if ! command -v buf >/dev/null 2>&1; then
+  echo "Error: buf CLI is required for release checks." >&2
+  exit 1
 fi
+echo "[run] buf lint"
+buf lint
+echo "[run] buf generate + freshness check"
+buf generate
+git diff --exit-code -- packages/go packages/typescript/src/generated
 
 echo "[run] verify"
 ./scripts/verify.sh

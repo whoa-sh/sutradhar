@@ -56,6 +56,9 @@ jobs:
       - name: Lint Protobuf Contracts (Buf)
         run: buf lint
 
+      - name: Validate Docs Freshness Markers
+        run: ./scripts/check-docs.sh
+
       - name: Enforce Protobuf Breaking Compatibility Against Master
         run: buf breaking --against '.git#branch=master'
 

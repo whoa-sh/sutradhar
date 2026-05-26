@@ -3,18 +3,20 @@ SHELL := bash
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release release-check suite-local suite-contracts suite-examples
+.PHONY: help dev proto-lint generate docs-check verify smoke-examples prototype preflight-release release-check polish suite-local suite-contracts suite-examples
 
 help:
 	@printf '%s\n' "Sutradhar make targets"
 	@printf '%s\n' "  make dev                              - quick local bootstrap checks"
 	@printf '%s\n' "  make proto-lint                       - run buf lint when buf.yaml exists"
 	@printf '%s\n' "  make generate                         - run buf generate when buf.gen.yaml exists"
+	@printf '%s\n' "  make docs-check                       - verify core docs mention required workflows"
 	@printf '%s\n' "  make verify                           - run local verification script"
 	@printf '%s\n' "  make smoke-examples                   - run JVM + TypeScript + Go examples"
 	@printf '%s\n' "  make prototype                        - lint + generate + verify (non-release loop)"
 	@printf '%s\n' "  make preflight-release VERSION=vX.Y.Z - release preflight checks"
 	@printf '%s\n' "  make release-check VERSION=vX.Y.Z     - full release validation suite"
+	@printf '%s\n' "  make polish                           - docs-check + verify"
 	@printf '%s\n' ""
 	@printf '%s\n' "Command suites"
 	@printf '%s\n' "  make suite-contracts                  - proto-lint + generate"
@@ -47,6 +49,9 @@ verify:
 smoke-examples:
 	@./scripts/smoke-examples.sh
 
+docs-check:
+	@./scripts/check-docs.sh
+
 prototype: proto-lint generate verify
 	@printf '%s\n' "[ok] prototype loop complete"
 
@@ -56,7 +61,7 @@ suite-contracts: proto-lint generate
 suite-examples: smoke-examples
 	@printf '%s\n' "[ok] suite-examples complete"
 
-suite-local: suite-contracts verify suite-examples
+suite-local: suite-contracts verify
 	@printf '%s\n' "[ok] suite-local complete"
 
 preflight-release:
@@ -72,3 +77,6 @@ release-check:
 		exit 1; \
 	fi
 	@./scripts/release-check.sh "$${VERSION}"
+
+polish: docs-check verify
+	@printf '%s\n' "[ok] polish checks complete"

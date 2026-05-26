@@ -37,11 +37,11 @@ fi
 if [[ -f "build.gradle.kts" ]]; then
   if [[ -x "./gradlew" ]]; then
     echo "[run] ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-    ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest >/dev/null
+    ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest
     echo "[ok] JVM parity test"
   elif [[ -f "./gradlew" ]]; then
     echo "[run] bash ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-    bash ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest >/dev/null
+    bash ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest
     echo "[ok] JVM parity test"
   else
     echo "[warn] build.gradle.kts exists but gradlew missing"
@@ -74,11 +74,7 @@ else
   echo "[skip] Go parity test (go or test file missing)"
 fi
 
-if command -v node >/dev/null 2>&1 && command -v go >/dev/null 2>&1 && [[ -f "./gradlew" ]]; then
-  echo "[run] ./scripts/smoke-examples.sh"
-  ./scripts/smoke-examples.sh
-else
-  echo "[skip] example smoke checks (toolchain missing)"
-fi
+echo "[run] ./scripts/smoke-examples.sh"
+./scripts/smoke-examples.sh
 
 echo "Verification completed."

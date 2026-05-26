@@ -41,6 +41,53 @@ try {
     }
     Write-Host "[ok] tooling baseline"
 
+    $releaseVersion = $Version.Substring(1)
+    $gradleContent = Get-Content build.gradle.kts -Raw
+    if ($gradleContent -match '(?m)^\s*version\s*=\s*"([^"]+)"') {
+        $gradleVersion = $Matches[1]
+    } else {
+        throw "Could not find version in build.gradle.kts"
+    }
+    $npmPackage = Get-Content packages/typescript/package.json -Raw | ConvertFrom-Json
+    $npmVersion = $npmPackage.version
+
+    if ($gradleVersion -ne $releaseVersion -or $npmVersion -ne $releaseVersion) {
+        throw "Committed versions do not match release version $releaseVersion."
+    }
+    Write-Host "[ok] committed versions match release input"
+
+    $mavenMetadataUrl = $env:MAVEN_METADATA_URL
+    if ($mavenMetadataUrl) {
+        $headers = @{}
+        if ($env:GITHUB_TOKEN) {
+            $headers["Authorization"] = "Bearer $($env:GITHUB_TOKEN)"
+        }
+        $metadataContent = ""
+        try {
+            $response = Invoke-WebRequest -Uri $mavenMetadataUrl -Headers $headers -UseBasicParsing
+            $metadataContent = $response.Content
+        } catch {
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 404) {
+                $metadataContent = ""
+            } else {
+                throw "Maven metadata lookup failed: $($_.Exception.Message)"
+            }
+        }
+        if ($metadataContent -match "<version>$releaseVersion</version>") {
+            throw "Maven version already exists in registry: $releaseVersion"
+        }
+        Write-Host "[ok] Maven registry version does not exist"
+    }
+
+    $npmPackageName = $env:NPM_PACKAGE_NAME
+    if ($npmPackageName) {
+        & npm view "$npmPackageName@$releaseVersion" version *> $null
+        if ($LASTEXITCODE -eq 0) {
+            throw "NPM version already exists in registry: $npmPackageName@$releaseVersion"
+        }
+        Write-Host "[ok] NPM registry version does not exist"
+    }
+
     Write-Host "Preflight passed."
 } finally {
     Pop-Location

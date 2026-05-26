@@ -70,6 +70,11 @@ jobs:
         run: ./scripts/verify.sh
 
       - name: Run Release Preflight Checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_METADATA_URL: "https://maven.pkg.github.com/whoa-sh/sutradhar/sh/whoa/sutradhar/sutradhar-protos-jvm/maven-metadata.xml"
+          NPM_PACKAGE_NAME: "@whoa-sh/sutradhar-protos"
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./scripts/release-preflight.sh "${{ steps.version.outputs.version }}"
 
       - name: Validate Committed Cross-Ecosystem Versions
