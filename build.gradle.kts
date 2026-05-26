@@ -14,15 +14,16 @@ java {
 }
 
 sourceSets {
-    named("main") {
+    getByName("main") {
         java.srcDir("src/main/java")
     }
     create("examples") {
+        val main = getByName("main")
         java.srcDir("examples/jvm/src/main/java")
-        compileClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath
-        runtimeClasspath += sourceSets["main"].output + sourceSets["main"].runtimeClasspath
+        compileClasspath += main.output + main.compileClasspath
+        runtimeClasspath += main.output + main.runtimeClasspath
     }
-    named("test") {
+    getByName("test") {
         java.srcDir("packages/jvm/src/test/java")
         resources.srcDir("contracts/fixtures")
     }
@@ -113,7 +114,7 @@ tasks.register("verifyRepositoryFiles") {
     }
 }
 
-tasks.named("check") {
+tasks.named<Task>("check") {
     dependsOn("protoLint")
     dependsOn("verifyRepositoryFiles")
 }
