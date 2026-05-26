@@ -49,8 +49,38 @@ jobs:
       - name: Run Full Local Verification Script
         run: ./scripts/verify.sh
 
+  snapshot-preflight-verification-windows:
+    name: Snapshot Preflight Verification (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: Run Full Local Verification Script (PowerShell)
+        shell: pwsh
+        run: .\scripts\verify.ps1
+
   publish-snapshot-maven-and-npm:
-    needs: snapshot-preflight-verification
+    needs:
+      - snapshot-preflight-verification
+      - snapshot-preflight-verification-windows
     runs-on: ubuntu-latest
     permissions:
       contents: read

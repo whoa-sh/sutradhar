@@ -90,8 +90,62 @@ jobs:
       - name: Validate Committed Cross-Ecosystem Versions
         run: ./scripts/validate-version.sh "${{ steps.version.outputs.version }}"
 
+  release-preflight-verification-windows:
+    name: Release Preflight Verification (Windows)
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate Release Version Format (vX.Y.Z)
+        id: version
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.inputs.version }}"
+          if ($version -notmatch '^v\d+\.\d+\.\d+$') {
+            throw "Invalid version: $version"
+          }
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: Run Full Local Verification Script (PowerShell)
+        shell: pwsh
+        run: .\scripts\verify.ps1
+      - name: Run Release Preflight Checks (PowerShell)
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_METADATA_URL: "https://maven.pkg.github.com/whoa-sh/sutradhar/sh/whoa/sutradhar/sutradhar-proto-jvm/maven-metadata.xml"
+          NPM_PACKAGE_NAME: "@whoa-sh/sutradhar-proto"
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .\scripts\release-preflight.ps1 -Version "${{ steps.version.outputs.version }}"
+      - name: Validate Committed Cross-Ecosystem Versions (PowerShell)
+        shell: pwsh
+        run: .\scripts\validate-version.ps1 -Version "${{ steps.version.outputs.version }}"
+
   publish-release-maven-and-npm:
-    needs: release-preflight-verification
+    needs:
+      - release-preflight-verification
+      - release-preflight-verification-windows
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -123,7 +177,9 @@ jobs:
           npm publish --access restricted
 
   publish-maven-central:
-    needs: release-preflight-verification
+    needs:
+      - release-preflight-verification
+      - release-preflight-verification-windows
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -166,6 +222,7 @@ jobs:
   create-release-tag:
     needs:
       - release-preflight-verification
+      - release-preflight-verification-windows
       - publish-release-maven-and-npm
       - publish-maven-central
     runs-on: ubuntu-latest
