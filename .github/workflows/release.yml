@@ -8,6 +8,14 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: release-${{ github.event.inputs.version }}
+  cancel-in-progress: false
+
 jobs:
   release-preflight-verification:
     runs-on: ubuntu-latest
@@ -15,7 +23,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -30,7 +38,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Setup Java 21 (Microsoft)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: "21"
@@ -40,9 +48,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
 
       - name: Setup Go 1.22
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.22"
       - name: Cache Go Modules and Build Cache
@@ -56,7 +66,9 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Setup Buf CLI
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
       - name: Cache Buf
         uses: actions/cache@v4
         with:
@@ -72,25 +84,99 @@ jobs:
       - name: Run Release Preflight Checks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MAVEN_METADATA_URL: "https://maven.pkg.github.com/whoa-sh/sutradhar/sh/whoa/sutradhar/sutradhar-protos-jvm/maven-metadata.xml"
-          NPM_PACKAGE_NAME: "@whoa-sh/sutradhar-protos"
+          MAVEN_METADATA_URL: "https://maven.pkg.github.com/whoa-sh/sutradhar/sh/whoa/sutradhar/sutradhar-proto-jvm/maven-metadata.xml"
+          NPM_PACKAGE_NAME: "@whoa-sh/sutradhar-proto"
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./scripts/release-preflight.sh "${{ steps.version.outputs.version }}"
 
       - name: Validate Committed Cross-Ecosystem Versions
         run: ./scripts/validate-version.sh "${{ steps.version.outputs.version }}"
 
+  release-preflight-verification-windows:
+    name: Release Preflight Verification (Windows)
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Validate Release Version Format (vX.Y.Z)
+        id: version
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.inputs.version }}"
+          if ($version -notmatch '^v\d+\.\d+\.\d+$') {
+            throw "Invalid version: $version"
+          }
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v5
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.22"
+      - name: Cache Go Modules and Build Cache (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\go\pkg\mod
+            ~\AppData\Local\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: Cache Buf (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\buf
+            ~\.cache\buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
+      - name: Run Full Local Verification Script (PowerShell)
+        shell: pwsh
+        run: .\scripts\verify.ps1
+      - name: Run Release Preflight Checks (PowerShell)
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_METADATA_URL: "https://maven.pkg.github.com/whoa-sh/sutradhar/sh/whoa/sutradhar/sutradhar-proto-jvm/maven-metadata.xml"
+          NPM_PACKAGE_NAME: "@whoa-sh/sutradhar-proto"
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .\scripts\release-preflight.ps1 -Version "${{ steps.version.outputs.version }}"
+      - name: Validate Committed Cross-Ecosystem Versions (PowerShell)
+        shell: pwsh
+        run: .\scripts\validate-version.ps1 -Version "${{ steps.version.outputs.version }}"
+
   publish-release-maven-and-npm:
-    needs: release-preflight-verification
+    needs:
+      - release-preflight-verification
+      - release-preflight-verification-windows
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Java 21 (Microsoft)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: "21"
@@ -100,6 +186,8 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://npm.pkg.github.com"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
       - name: Publish Maven Release (GitHub Packages)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -112,21 +200,86 @@ jobs:
         run: |
           npm publish --access restricted
 
+  publish-maven-central:
+    needs:
+      - release-preflight-verification
+      - release-preflight-verification-windows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment:
+      name: maven-central
+      url: https://central.sonatype.com/publishing/deployments
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v5
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Cache Go Modules and Build Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Cache Buf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
+      - name: Normalize signing password
+        id: signing
+        env:
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SIGNING_PASSWORD//[[:space:]]/}" ]]; then
+            echo "password=" >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "password<<EOF"
+              echo "$SIGNING_PASSWORD"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish JVM Artifact to Maven Central
+        run: ./gradlew --no-daemon publishAndReleaseToMavenCentral
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ steps.signing.outputs.password }}
+
   create-release-tag:
     needs:
       - release-preflight-verification
+      - release-preflight-verification-windows
       - publish-release-maven-and-npm
+      - publish-maven-central
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Create and Push Immutable Release Tag
         run: |
           VERSION="${{ needs.release-preflight-verification.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag "$VERSION"
           git push origin "$VERSION"
+

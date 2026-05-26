@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Java 21 (Microsoft)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: "21"
@@ -21,8 +21,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
       - name: Setup Go 1.22
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.22"
       - name: Cache Go Modules and Build Cache
@@ -35,7 +37,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Setup Buf CLI
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
       - name: Cache Buf
         uses: actions/cache@v4
         with:
@@ -47,8 +51,58 @@ jobs:
       - name: Run Full Local Verification Script
         run: ./scripts/verify.sh
 
+  snapshot-preflight-verification-windows:
+    name: Snapshot Preflight Verification (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v5
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.22"
+      - name: Cache Go Modules and Build Cache (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\go\pkg\mod
+            ~\AppData\Local\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: Cache Buf (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\buf
+            ~\.cache\buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
+      - name: Run Full Local Verification Script (PowerShell)
+        shell: pwsh
+        run: .\scripts\verify.ps1
+
   publish-snapshot-maven-and-npm:
-    needs: snapshot-preflight-verification
+    needs:
+      - snapshot-preflight-verification
+      - snapshot-preflight-verification-windows
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -56,9 +110,9 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Java 21 (Microsoft)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: "21"
@@ -68,6 +122,8 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://npm.pkg.github.com"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
       - name: Publish Maven Snapshot (GitHub Packages)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,3 +138,4 @@ jobs:
           SNAPSHOT_VERSION="${BASE_VERSION}-snapshot.${GITHUB_RUN_NUMBER}"
           node -e "const fs=require('fs');const p=require('./package.json');p.version='${SNAPSHOT_VERSION}';fs.writeFileSync('./package.json', JSON.stringify(p,null,2)+'\n');"
           npm publish --tag snapshot --access restricted
+

@@ -17,7 +17,8 @@ required_files=(
 
 for path in "${required_files[@]}"; do
   if [[ ! -f "$path" ]]; then
-    echo "Missing required file: $path" >&2
+    echo "[fail] Missing required file: $path" >&2
+    echo "[fail] remediation: restore the missing repository file before running verify." >&2
     exit 1
   fi
   echo "[ok] $path"
@@ -25,7 +26,8 @@ done
 
 if [[ -f "buf.yaml" ]]; then
   if ! command -v buf >/dev/null 2>&1; then
-    echo "buf.yaml exists but buf CLI is not available." >&2
+    echo "[fail] buf.yaml exists but buf CLI is not available." >&2
+    echo "[fail] remediation: install buf and ensure it is on PATH." >&2
     exit 1
   fi
   echo "[run] buf lint"
@@ -44,7 +46,9 @@ if [[ -f "build.gradle.kts" ]]; then
     bash ./gradlew --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest
     echo "[ok] JVM parity test"
   else
-    echo "[warn] build.gradle.kts exists but gradlew missing"
+    echo "[fail] build.gradle.kts exists but gradlew missing"
+    echo "[fail] remediation: restore gradlew and rerun verification." >&2
+    exit 1
   fi
 else
   echo "[skip] Gradle checks (build not scaffolded yet)"
@@ -77,4 +81,4 @@ fi
 echo "[run] ./scripts/smoke-examples.sh"
 ./scripts/smoke-examples.sh
 
-echo "Verification completed."
+echo "[ok] verification completed"

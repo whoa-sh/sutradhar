@@ -89,6 +89,7 @@ make suite-contracts
 make suite-examples
 make suite-local
 make docs-check
+make sync-version
 make polish
 ```
 
@@ -103,6 +104,7 @@ make -f Makefile.windows suite-contracts
 make -f Makefile.windows suite-examples
 make -f Makefile.windows suite-local
 make -f Makefile.windows docs-check
+make -f Makefile.windows sync-version
 make -f Makefile.windows polish
 ```
 
@@ -118,6 +120,7 @@ make -f Makefile.windows polish
 - `suite-examples`: grouped examples loop (`smoke-examples`).
 - `suite-local`: full local suite (`suite-contracts + verify + suite-examples`).
 - `preflight-release VERSION=vX.Y.Z`: strict release input and workspace preflight checks.
+- `sync-version`: syncs `packages/typescript/package.json` version from Gradle root version.
 
 ## Consumer Examples (M11)
 
@@ -171,7 +174,7 @@ Recommended commit boundaries:
 
 Snapshots publish from `master` only for Maven and npm packages.
 
-Immutable releases use a manual `vX.Y.Z` workflow, validate committed package versions, publish Maven/npm artifacts, and create the Git tag for Go module consumption.
+Immutable releases are manual-first: only `workflow_dispatch` with `vX.Y.Z` is allowed. The workflow validates committed package versions, publishes Maven artifacts to GitHub Packages and Maven Central, publishes npm artifacts to GitHub Packages, and then creates the Git tag for Go module consumption.
 
 Release invariants:
 
@@ -179,6 +182,13 @@ Release invariants:
 - Release input must be `vX.Y.Z`.
 - `build.gradle.kts` version and `packages/typescript/package.json` version must already match `X.Y.Z` before release workflow runs.
 - Go release remains tag-driven (`vX.Y.Z`); no Go snapshot publishing lane.
+
+Version source-of-truth:
+- Gradle root version in `build.gradle.kts` is authoritative.
+- Sync TypeScript package version from Gradle before release/snapshot prep:
+  - Unix-like: `make sync-version`
+  - PowerShell: `make -f Makefile.windows sync-version`
+- Release checks still enforce committed cross-ecosystem version match.
 
 Release governance docs:
 - `docs/governance/compatibility-policy.md`

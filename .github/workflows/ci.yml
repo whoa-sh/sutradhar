@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Setup Java 21 (Microsoft)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: "21"
@@ -25,9 +25,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
 
       - name: Setup Go 1.22
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.22"
 
@@ -42,7 +44,9 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Setup Buf CLI
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
 
       - name: Cache Buf
         uses: actions/cache@v4
@@ -60,7 +64,9 @@ jobs:
         run: ./scripts/check-docs.sh
 
       - name: Enforce Protobuf Breaking Compatibility Against Master
-        run: buf breaking --against '.git#branch=master'
+        run: |
+          git fetch origin master:refs/remotes/origin/master
+          buf breaking --against '.git#branch=origin/master'
 
       - name: Check Generated Output Freshness
         run: |
@@ -87,9 +93,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Java 21 (Microsoft)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: "21"
@@ -98,11 +104,84 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
       - name: Setup Go 1.22
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.22"
+      - name: Cache Go Modules and Build Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Setup Buf CLI
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: Cache Buf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
       - name: Run Suite Local
         run: make suite-local
+
+  windows-powershell-validation:
+    name: Windows PowerShell Validation Suite
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Setup Java 21 (Microsoft)
+        uses: actions/setup-java@v5
+        with:
+          distribution: microsoft
+          java-version: "21"
+          cache: gradle
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/typescript/package.json
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.22"
+      - name: Cache Go Modules and Build Cache (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\go\pkg\mod
+            ~\AppData\Local\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('packages/go/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Setup Buf CLI
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - name: Cache Buf (Windows)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\buf
+            ~\.cache\buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('buf.yaml', 'buf.gen.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-buf-
+      - name: Run Docs Freshness Check (PowerShell)
+        shell: pwsh
+        run: .\scripts\check-docs.ps1
+      - name: Run Full Verification (PowerShell)
+        shell: pwsh
+        run: .\scripts\verify.ps1
+
