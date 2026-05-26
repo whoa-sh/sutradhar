@@ -3,7 +3,7 @@ SHELL := powershell.exe
 
 .DEFAULT_GOAL := help
 
-.PHONY: help dev proto-lint generate verify prototype preflight-release
+.PHONY: help dev proto-lint generate verify smoke-examples prototype preflight-release suite-local suite-contracts suite-examples
 
 help:
 	@Write-Host "Sutradhar Windows make targets"
@@ -11,8 +11,14 @@ help:
 	@Write-Host "  make -f Makefile.windows proto-lint"
 	@Write-Host "  make -f Makefile.windows generate"
 	@Write-Host "  make -f Makefile.windows verify"
+	@Write-Host "  make -f Makefile.windows smoke-examples"
 	@Write-Host "  make -f Makefile.windows prototype"
 	@Write-Host "  make -f Makefile.windows preflight-release VERSION=vX.Y.Z"
+	@Write-Host ""
+	@Write-Host "Command suites"
+	@Write-Host "  make -f Makefile.windows suite-contracts"
+	@Write-Host "  make -f Makefile.windows suite-examples"
+	@Write-Host "  make -f Makefile.windows suite-local"
 
 dev:
 	@.\scripts\dev.ps1
@@ -37,8 +43,20 @@ generate:
 verify:
 	@.\scripts\verify.ps1
 
+smoke-examples:
+	@.\scripts\smoke-examples.ps1
+
 prototype: proto-lint generate verify
 	@Write-Host "[ok] prototype loop complete"
+
+suite-contracts: proto-lint generate
+	@Write-Host "[ok] suite-contracts complete"
+
+suite-examples: smoke-examples
+	@Write-Host "[ok] suite-examples complete"
+
+suite-local: suite-contracts verify suite-examples
+	@Write-Host "[ok] suite-local complete"
 
 preflight-release:
 	@if (-not "$(VERSION)") { throw "Set VERSION=vX.Y.Z. Example: make -f Makefile.windows preflight-release VERSION=v0.1.0"; }

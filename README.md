@@ -84,6 +84,10 @@ Unix-like systems, Git Bash, WSL, Linux, and macOS:
 make dev
 make verify
 make prototype
+make smoke-examples
+make suite-contracts
+make suite-examples
+make suite-local
 ```
 
 Native Windows PowerShell:
@@ -92,7 +96,39 @@ Native Windows PowerShell:
 make -f Makefile.windows dev
 make -f Makefile.windows verify
 make -f Makefile.windows prototype
+make -f Makefile.windows smoke-examples
+make -f Makefile.windows suite-contracts
+make -f Makefile.windows suite-examples
+make -f Makefile.windows suite-local
 ```
+
+### Command Meaning
+
+- `dev`: environment/bootstrap sanity checks.
+- `proto-lint`: protobuf lint checks via Buf.
+- `generate`: regenerates protobuf outputs for Go and TypeScript.
+- `verify`: strict validation gate (files, lint, parity tests, and smoke examples when toolchains are available).
+- `smoke-examples`: runs runnable JVM/TypeScript/Go consumer examples.
+- `prototype`: fast non-release loop (`proto-lint + generate + verify`).
+- `suite-contracts`: grouped contract loop (`proto-lint + generate`).
+- `suite-examples`: grouped examples loop (`smoke-examples`).
+- `suite-local`: full local suite (`suite-contracts + verify + suite-examples`).
+- `preflight-release VERSION=vX.Y.Z`: strict release input and workspace preflight checks.
+
+## Consumer Examples (M11)
+
+Minimal runnable examples are available for each target language:
+
+- JVM: `examples/jvm/src/main/java/sh/whoa/sutradhar/examples/M11ConsumerExample.java`
+- TypeScript: `examples/typescript/consumer-example.mjs`
+- Go: `packages/go/examples/m11/main.go`
+
+Run all examples:
+
+- Unix-like: `./scripts/smoke-examples.sh`
+- PowerShell: `.\scripts\smoke-examples.ps1`
+
+Detailed adoption flow: `docs/integration/m11-consumer-adoption-kit.md`.
 
 ## Design And Review Process
 
@@ -164,3 +200,12 @@ Local equivalent before opening PR:
 
 - Unix-like: `./scripts/verify.sh`
 - PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1`
+
+## Documentation Map
+
+Integration and operations docs:
+
+- `docs/integration/producer-consumer-onboarding.md`
+- `docs/runbooks/release-runbook.md`
+- `docs/runbooks/rollback-runbook.md`
+- `docs/governance/sensitivity-and-pii.md`

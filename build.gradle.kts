@@ -16,6 +16,7 @@ java {
 sourceSets {
     named("main") {
         java.srcDir("src/main/java")
+        java.srcDir("examples/jvm/src/main/java")
     }
     named("test") {
         java.srcDir("packages/jvm/src/test/java")
@@ -30,6 +31,13 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.register<JavaExec>("runM11JvmExample") {
+    group = "application"
+    description = "Runs the M11 JVM consumer example."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("sh.whoa.sutradhar.examples.M11ConsumerExample")
 }
 
 tasks.register<Exec>("protoLint") {

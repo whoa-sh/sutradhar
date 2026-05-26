@@ -66,4 +66,11 @@ else
   echo "[skip] Go parity test (go or test file missing)"
 fi
 
+if command -v node >/dev/null 2>&1 && command -v go >/dev/null 2>&1 && [[ -f "./gradlew" ]]; then
+  echo "[run] ./scripts/smoke-examples.sh"
+  ./scripts/smoke-examples.sh
+else
+  echo "[skip] example smoke checks (toolchain missing)"
+fi
+
 echo "Verification completed."

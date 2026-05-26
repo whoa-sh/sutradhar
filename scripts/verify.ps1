@@ -30,40 +30,26 @@ try {
         }
         Write-Host "[run] buf lint"
         & buf lint
-        if ($LASTEXITCODE -ne 0) {
-            throw "buf lint failed with exit code $LASTEXITCODE"
-        }
+        if ($LASTEXITCODE -ne 0) { throw "buf lint failed with exit code $LASTEXITCODE" }
     } else {
         Write-Host "[skip] buf lint (buf.yaml not present yet)"
     }
 
-    if (Test-Path "build.gradle.kts") {
-        if (Test-Path "gradlew.bat") {
-            Write-Host "[run] .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
-            & .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
-            if ($LASTEXITCODE -ne 0) {
-                throw "gradlew test failed with exit code $LASTEXITCODE"
-            }
-            Write-Host "[ok] JVM parity test"
-        } else {
-            Write-Host "[warn] build.gradle.kts exists but gradlew.bat missing"
-        }
+    if ((Test-Path "build.gradle.kts") -and (Test-Path "gradlew.bat")) {
+        Write-Host "[run] .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest"
+        & .\gradlew.bat --no-daemon clean test --tests sh.whoa.sutradhar.sdk.v1.ValidationParityTest | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "gradlew test failed with exit code $LASTEXITCODE" }
+        Write-Host "[ok] JVM parity test"
     } else {
         Write-Host "[skip] Gradle checks (build not scaffolded yet)"
     }
 
-    Write-Host "Verification completed."
-} finally {
-    Pop-Location
-}
     if ((Get-Command node -ErrorAction SilentlyContinue) -and (Test-Path "packages/typescript/src/sdk/parity.test.mjs")) {
         Write-Host "[run] node --test src/sdk/parity.test.mjs"
         Push-Location "packages/typescript"
         try {
             & node --test src/sdk/parity.test.mjs
-            if ($LASTEXITCODE -ne 0) {
-                throw "TypeScript parity test failed with exit code $LASTEXITCODE"
-            }
+            if ($LASTEXITCODE -ne 0) { throw "TypeScript parity test failed with exit code $LASTEXITCODE" }
             Write-Host "[ok] TypeScript parity test"
         } finally {
             Pop-Location
@@ -77,9 +63,7 @@ try {
         Push-Location "packages/go"
         try {
             & go test ./sh/whoa/sutradhar/sdk/v1
-            if ($LASTEXITCODE -ne 0) {
-                throw "Go parity test failed with exit code $LASTEXITCODE"
-            }
+            if ($LASTEXITCODE -ne 0) { throw "Go parity test failed with exit code $LASTEXITCODE" }
             Write-Host "[ok] Go parity test"
         } finally {
             Pop-Location
@@ -87,3 +71,16 @@ try {
     } else {
         Write-Host "[skip] Go parity test (go or test file missing)"
     }
+
+    if ((Get-Command node -ErrorAction SilentlyContinue) -and (Get-Command go -ErrorAction SilentlyContinue) -and (Test-Path "gradlew.bat")) {
+        Write-Host "[run] .\scripts\smoke-examples.ps1"
+        & .\scripts\smoke-examples.ps1
+        if ($LASTEXITCODE -ne 0) { throw "example smoke checks failed with exit code $LASTEXITCODE" }
+    } else {
+        Write-Host "[skip] example smoke checks (toolchain missing)"
+    }
+
+    Write-Host "Verification completed."
+} finally {
+    Pop-Location
+}
