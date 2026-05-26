@@ -1,6 +1,7 @@
 plugins {
     base
     java
+    `maven-publish`
 }
 
 group = "sh.whoa.sutradhar"
@@ -103,4 +104,27 @@ tasks.register("verifyRepositoryFiles") {
 tasks.named("check") {
     dependsOn("protoLint")
     dependsOn("verifyRepositoryFiles")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            groupId = project.group.toString()
+            artifactId = "sutradhar-proto-jvm"
+            version = project.version.toString()
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/whoa-sh/sutradhar")
+            credentials {
+                username = providers.environmentVariable("GITHUB_ACTOR").orNull
+                    ?: providers.environmentVariable("MAVEN_USERNAME").orNull
+                password = providers.environmentVariable("GITHUB_TOKEN").orNull
+                    ?: providers.environmentVariable("MAVEN_PASSWORD").orNull
+            }
+        }
+    }
 }

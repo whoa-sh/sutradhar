@@ -133,6 +133,13 @@ Snapshots publish from `master` only for Maven and npm packages.
 
 Immutable releases use a manual `vX.Y.Z` workflow, validate committed package versions, publish Maven/npm artifacts, and create the Git tag for Go module consumption.
 
+Release invariants:
+
+- Publish workflows never mutate project version files.
+- Release input must be `vX.Y.Z`.
+- `build.gradle.kts` version and `packages/typescript/package.json` version must already match `X.Y.Z` before release workflow runs.
+- Go release remains tag-driven (`vX.Y.Z`); no Go snapshot publishing lane.
+
 ## CI Hardening
 
 GitHub Actions workflows:
@@ -144,11 +151,14 @@ GitHub Actions workflows:
   - runs JVM/TypeScript/Go parity tests.
 - `.github/workflows/snapshot.yml`
   - separate snapshot lane from `master` / manual dispatch,
-  - runs strict repo verification before publish steps.
+  - runs strict repo verification before publish steps,
+  - publishes Maven and npm snapshots to GitHub Packages.
 - `.github/workflows/release.yml`
   - manual immutable release lane,
   - requires `version` input in `vX.Y.Z`,
   - validates full preflight before creating/pushing the exact tag.
+  - validates committed cross-ecosystem versions before publish,
+  - publishes Maven and npm releases to GitHub Packages.
 
 Local equivalent before opening PR:
 
