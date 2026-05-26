@@ -42,8 +42,12 @@ try {
     Write-Host "[ok] tooling baseline"
 
     $releaseVersion = $Version.Substring(1)
-    $gradleVersionLine = (Get-Content build.gradle.kts | Select-String -Pattern '^\s*version\s*=' | Select-Object -First 1).Line
-    $gradleVersion = [regex]::Match($gradleVersionLine, '"([^"]+)"').Groups[1].Value
+    $gradleContent = Get-Content build.gradle.kts -Raw
+    if ($gradleContent -match '(?m)^\s*version\s*=\s*"([^"]+)"') {
+        $gradleVersion = $Matches[1]
+    } else {
+        throw "Could not find version in build.gradle.kts"
+    }
     $npmPackage = Get-Content packages/typescript/package.json -Raw | ConvertFrom-Json
     $npmVersion = $npmPackage.version
 

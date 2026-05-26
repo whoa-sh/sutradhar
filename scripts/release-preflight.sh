@@ -43,8 +43,8 @@ fi
 echo "[ok] tooling baseline"
 
 MAVEN_VERSION="${VERSION#v}"
-GRADLE_VERSION="$(grep -E '^version\s*=' build.gradle.kts | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')"
-NPM_VERSION="$(grep -E '"version"\s*:' packages/typescript/package.json | head -n1 | sed -E 's/.*"version"\s*:\s*"([^"]+)".*/\1/')"
+GRADLE_VERSION="$(sed -nE 's/^[[:space:]]*version[[:space:]]*=[[:space:]]*"([^"]+)".*$/\1/p' build.gradle.kts | head -n1)"
+NPM_VERSION="$(node -p "require('./packages/typescript/package.json').version")"
 
 if [[ "$GRADLE_VERSION" != "$MAVEN_VERSION" || "$NPM_VERSION" != "$MAVEN_VERSION" ]]; then
   echo "Committed versions do not match release version $MAVEN_VERSION." >&2
