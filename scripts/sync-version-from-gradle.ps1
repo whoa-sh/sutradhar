@@ -13,12 +13,16 @@ try {
         throw "[fail] Could not find version in build.gradle.kts`n[fail] remediation: define root project version in build.gradle.kts as version = ""X.Y.Z""."
     }
 
-    $packagePath = "packages/typescript/package.json"
-    $packageJson = Get-Content $packagePath -Raw | ConvertFrom-Json
-    $packageJson.version = $gradleVersion
-    $packageJson | ConvertTo-Json -Depth 10 | Set-Content $packagePath
-
-    Write-Host "[ok] packages/typescript/package.json version set to $gradleVersion"
+    $packagePath = Join-Path $root "packages/typescript/package.json"
+    $content = Get-Content $packagePath -Raw
+    if ($content -match '"version"\s*:\s*"[^"]+"') {
+        $updated = $content -replace '"version"\s*:\s*"[^"]+"', ('"version": "' + $gradleVersion + '"')
+        $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+        [System.IO.File]::WriteAllText($packagePath, $updated, $utf8NoBom)
+        Write-Host "[ok] packages/typescript/package.json version set to $gradleVersion"
+    } else {
+        throw "[fail] Could not find version field in packages/typescript/package.json"
+    }
 } finally {
     Pop-Location
 }

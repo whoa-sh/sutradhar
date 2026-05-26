@@ -18,5 +18,6 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 
 echo "[run] sync package.json version from Gradle version $GRADLE_VERSION"
-node -e "const fs=require('fs'); const p='packages/typescript/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.version='${GRADLE_VERSION}'; fs.writeFileSync(p, JSON.stringify(j,null,2)+'\n');"
+export GRADLE_VERSION
+node -e "const fs=require('fs'); const p='packages/typescript/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.version=process.env.GRADLE_VERSION; fs.writeFileSync(p, JSON.stringify(j,null,2)+'\n');"
 echo "[ok] packages/typescript/package.json version set to $GRADLE_VERSION"
