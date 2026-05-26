@@ -3,6 +3,7 @@
 ## Scope
 
 Immutable production release for Maven and npm packages using GitHub Packages and exact `vX.Y.Z` tags.
+Release is manual-first and triggered only via workflow dispatch.
 
 ## Preconditions
 

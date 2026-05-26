@@ -8,6 +8,14 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: release-${{ github.event.inputs.version }}
+  cancel-in-progress: false
+
 jobs:
   release-preflight-verification:
     runs-on: ubuntu-latest
@@ -128,5 +136,7 @@ jobs:
       - name: Create and Push Immutable Release Tag
         run: |
           VERSION="${{ needs.release-preflight-verification.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag "$VERSION"
           git push origin "$VERSION"
