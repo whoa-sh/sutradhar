@@ -4,6 +4,7 @@
 
 Immutable production release for Maven Central + GitHub Packages (Maven and npm) using exact `vX.Y.Z` tags.
 Release is manual-first and triggered only via workflow dispatch.
+Maven Central is release-only and never accepts `-SNAPSHOT` versions.
 
 ## Preconditions
 

@@ -172,7 +172,7 @@ Recommended commit boundaries:
 
 ## Release Model
 
-Snapshots publish from `master` only for Maven and npm packages.
+Snapshots publish from `master` only for GitHub Packages (Maven and npm). Maven Central never receives snapshots.
 
 Immutable releases are manual-first: only `workflow_dispatch` with `vX.Y.Z` is allowed. The workflow validates committed package versions, publishes Maven artifacts to GitHub Packages and Maven Central, publishes npm artifacts to GitHub Packages, and then creates the Git tag for Go module consumption.
 

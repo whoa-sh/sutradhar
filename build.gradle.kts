@@ -120,6 +120,22 @@ tasks.named<Task>("check") {
     dependsOn("verifyRepositoryFiles")
 }
 
+tasks.matching {
+    it.name in setOf(
+        "publishToMavenCentral",
+        "publishAndReleaseToMavenCentral",
+        "publishAllPublicationsToMavenCentralRepository",
+        "publishMavenPublicationToMavenCentralRepository"
+    )
+}.configureEach {
+    doFirst {
+        val currentVersion = project.version.toString()
+        require(!currentVersion.endsWith("-SNAPSHOT")) {
+            "Maven Central publish is release-only. Refusing snapshot version: $currentVersion"
+        }
+    }
+}
+
 publishing {
     repositories {
         maven {
