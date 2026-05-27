@@ -15,9 +15,6 @@ java {
 }
 
 sourceSets {
-    getByName("main") {
-        java.srcDir("src/main/java")
-    }
     create("examples") {
         val main = getByName("main")
         java.srcDir("examples/jvm/src/main/java")
