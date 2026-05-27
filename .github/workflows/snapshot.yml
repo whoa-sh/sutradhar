@@ -128,7 +128,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
-        run: ./gradlew --no-daemon publish
+        run: ./gradlew --no-daemon publishAllPublicationsToGitHubPackagesRepository
       - name: Publish NPM Snapshot (GitHub Packages)
         working-directory: packages/typescript
         env:
@@ -138,4 +138,3 @@ jobs:
           SNAPSHOT_VERSION="${BASE_VERSION}-snapshot.${GITHUB_RUN_NUMBER}"
           node -e "const fs=require('fs');const p=require('./package.json');p.version='${SNAPSHOT_VERSION}';fs.writeFileSync('./package.json', JSON.stringify(p,null,2)+'\n');"
           npm publish --tag snapshot --access restricted
-
